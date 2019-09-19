@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Login</title>
+    <%- include('./common/link'); %>
+    <%- include('./common/navbar',{nav:{
+      home:"",
+      road:"active",
+      work:""  
+    }}); %>
+    <style>
+        body{
+            text-align: center;
+        }
+    </style>
+  </head>
+  <body>
+<div class="container-fluid" style="margin-top:5%;margin-bottom:5%;">
+        <div class="row">
+                <div class="col-md-12" id="map_canvas" style="height: 300px">
+                
+                
+                </div>
+            </div>
+            <div class="row" style="margin-top:1%;">
+                <div class="col-md-4">
+                    <button class="btn btn-outline-success" >Point A <i class="far fa-play-circle"></i></button>
+                </div>
+                <div class="col-md-4">
+                        <button class="btn btn-outline-success" >Point B <i class="far fa-play-circle"></i></button>
+                    </div>
+                    <div class="col-md-4">
+                            <button class="btn btn-outline-success" >Point C <i class="far fa-play-circle"></i></button>
+                        </div>
+                
+                </div>
+                
+                <div class="row">
+                <div class="col-6">
+                <button class="btn btn-primary " style="width: 100%;" >Check Daily Prof</button>
+                </div>
+                
+                <div class="col-6">
+                        <button class="btn btn-danger " style="width: 100%;" >remove road</button>
+                
+                </div>
+
+            </div>
+              
+                <div class="row text-center">
+                        <div class="col-md-12">
+                      <textarea placeholder="Send Notification" style="width: 100%;" rows="3" ></textarea>
+                        </div>
+                        
+                        <div class="col-md-12">
+                                <button class="btn btn-outline-primary " style="width: 100%;border-radius:40px " >Send Notification</button>
+                        
+                        </div>
+                
+                </div>
+
+
+<%- include('./common/footer'); %>
+<%- include('./common/script'); %>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBURXw2Qd9JRmA_zcZnIymC1ID5ioc2C-8&callback=initMap"
+    async defer></script>
+    <script>
+        
+     
+        initMap();
+        function initMap() {
+          var myLatLng = {lat: 23.0038795, lng: 72.6208747};
+          var myLatLng2 = {lat: 23.003839997347036, lng: 72.6194584936402};
+          var myLatLng3 = {lat:23.00350422433, lng: 72.61769896452643}; 
+        var map = new google.maps.Map(document.getElementById('map_canvas'), {
+          zoom: 16,
+          center: myLatLng
+        });
+
+        var marker = new google.maps.Marker({
+          position: myLatLng,
+          map: map,
+          draggable: true,
+          title: 'Point A'
+        });
+
+        var marker = new google.maps.Marker({
+          position: myLatLng2,
+          map: map,
+          draggable: true,
+          title: 'Point B'
+        });
+
+        var marker = new google.maps.Marker({
+          position: myLatLng3,
+          map: map,
+          draggable: true,
+          title: 'Point C'
+        });
+           
+      google.maps.event.addListener(marker, 'dragend', function (event) {
+          console.log(event.latLng.lat(),event.latLng.lng());
+   //drag event
+});
+
+    
+           
+           
+}
+         
+    
+    </script>
+</body>
+</html>

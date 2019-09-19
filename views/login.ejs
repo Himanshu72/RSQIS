@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Login</title>
+    <%- include('./common/link'); %>
+    <%- include('./common/navbar',{nav:{
+      home:"active",
+      comp:"",
+      work:""  
+    }}); %>
+  </head>
+  <body>
+<div class="container" style="margin-top:5%;margin-bottom:5%;">
+  <!-- Default form login -->
+<form class="text-center border border-light p-5" action="/login" method="POST"  >
+
+  <p class="h4 mb-4">Sign in</p>
+  <%if(data.error){%>
+  
+<div class="alert alert-danger"><%=data.msg%></div>
+ <%}%>  
+<!-- Email -->
+  <input type="text" name="username"  id="defaultLoginFormEmail" class="form-control mb-4" placeholder="username">
+
+  <!-- Password -->
+  <input type="password" name="password"  id="defaultLoginFormPassword" class="form-control mb-4" placeholder="Password">
+
+  <div class="d-flex justify-content-around">
+      
+      <div>
+          <!-- Forgot password -->
+          <a href="/forgot">Forgot password?</a>
+      </div>
+  </div>
+
+  <!-- Sign in button -->
+  <button class="btn btn-info btn-block my-4" type="submit">Sign in</button>
+
+  <!-- Register -->
+  <p>Not a member?
+      <a href="/register">Register</a>
+  </p>
+
+  <!-- Social login -->
+  
+
+</form>
+<!-- Default form login -->
+</div>
+<%- include('./common/footer'); %>
+<%- include('./common/script'); %>
+  </body>
+</html>
