@@ -2,58 +2,89 @@
 <html>
   <head>
     <title>Register</title>
-    <%- include('./common/link'); %>
-    <%- include('./common/navbar',{nav:{
-      home:"active",
-      comp:"",
-      work:""  
-    }}); %>
+    <%- include('./common/link'); %> <%- include('./common/navbar',{nav:{
+    home:"active", comp:"", work:"", user:data.user, username:data.username }});
+    %>
   </head>
   <body>
-<div class="container" style="margin-top:5%;margin-bottom:5%;">
- <!-- Default form register -->
-<form class="text-center border border-light p-5" action="#!">
-
+    <div class="container" style="margin-top:5%;margin-bottom:5%;">
+      <!-- Default form register -->
+      <form class="text-center border border-light p-5" action="#!">
         <p class="h4 mb-4">Sign up</p>
-    
+
         <div class="form-row mb-4">
-            <div class="col">
-                <!-- First name -->
-                <input type="text" id="defaultRegisterFormFirstName" class="form-control" placeholder="First name">
-            </div>
-            <div class="col">
-                <!-- Last name -->
-                <input type="text" id="defaultRegisterFormLastName" class="form-control" placeholder="Last name">
-            </div>
+          <div class="col">
+            <!-- First name -->
+            <input
+              type="text"
+              id="defaultRegisterFormFirstName"
+              class="form-control"
+              placeholder="First name"
+              required
+            />
+          </div>
+          <div class="col">
+            <!-- Last name -->
+            <input
+              type="text"
+              id="defaultRegisterFormLastName"
+              class="form-control"
+              placeholder="Last name"
+              required
+            />
+          </div>
         </div>
-    
+
+        <!--Username-->
+        <input
+          type="text"
+          id="defaultRegisterFormUsername"
+          class="form-control mb-4"
+          placeholder="Username"
+          required
+        />
+
         <!-- E-mail -->
-        <input type="email" id="defaultRegisterFormEmail" class="form-control mb-4" placeholder="E-mail">
-    
+        <input
+          type="email"
+          id="defaultRegisterFormEmail"
+          class="form-control mb-4"
+          placeholder="E-mail"
+          required
+        />
+
         <!-- Password -->
-        <input type="password" id="defaultRegisterFormPassword" class="form-control" placeholder="Password" aria-describedby="defaultRegisterFormPasswordHelpBlock">
-        <small id="defaultRegisterFormPasswordHelpBlock" class="form-text text-muted mb-4">
-            At least 8 characters and 1 digit
-        </small>
-    
+        <input
+          type="password"
+          id="defaultRegisterFormPassword"
+          class="form-control"
+          placeholder="Password"
+          aria-describedby="defaultRegisterFormPasswordHelpBlock"
+          required
+        />
+
         <!-- Phone number -->
-        <input type="text" id="defaultRegisterPhonePassword" class="form-control" placeholder="Phone number" aria-describedby="defaultRegisterFormPhoneHelpBlock">
-        <small id="defaultRegisterFormPhoneHelpBlock" class="form-text text-muted mb-4">
-            Optional - for two step authentication
-        </small>
-    
+        <br />
+        <input
+          type="number"
+          id="defaultRegisterPhonePassword"
+          class="form-control"
+          placeholder="Phone number"
+          aria-describedby="defaultRegisterFormPhoneHelpBlock"
+          required
+        />
+
         <!-- Newsletter -->
-    
+
         <!-- Sign up button -->
-        <button class="btn btn-info my-4 btn-block" type="submit">Sign UP</button>
-    
+        <button class="btn btn-info my-4 btn-block" type="submit">
+          Sign UP
+        </button>
+
         <!-- Social register -->
-      
-    
-    </form>
-    <!-- Default form register -->  
-</div>
-<%- include('./common/footer'); %>
-<%- include('./common/script'); %>
+      </form>
+      <!-- Default form register -->
+    </div>
+    <%- include('./common/footer'); %> <%- include('./common/script'); %>
   </body>
 </html>
