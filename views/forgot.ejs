@@ -2,42 +2,40 @@
 <html>
   <head>
     <title>Forgot Password</title>
-    <%- include('./common/link'); %>
-    <%- include('./common/navbar',{nav:{
-        home:"active",
-        comp:"",
-        work:"",
-        user:data.user,
-        username:data.username  
-      }}); %>
+    <%- include('./common/link'); %> <%- include('./common/navbar',{nav:{
+    home:"active", comp:"", work:"", user:data.user, username:data.username }});
+    %>
   </head>
   <body>
-<div class="container" style="margin-top:5%;margin-bottom:5%;">
-  <!-- Default form login -->
-<form class="text-center border border-light p-5" action="#!">
+    <div class="container" style="margin-top:5%;margin-bottom:5%;">
+      <!-- Default form login -->
+      <form
+        class="text-center border border-light p-5"
+        action="/forgot"
+        method="POST"
+      >
+        <p class="h4 mb-4">Forgot Password</p>
 
-  <p class="h4 mb-4">Forgot Password</p>
+        <!-- Email -->
+        <input
+          type="email"
+          id="defaultLoginFormEmail"
+          class="form-control mb-4"
+          placeholder="E-mail"
+          name="email"
+        />
 
-  <!-- Email -->
-  <input type="email" id="defaultLoginFormEmail" class="form-control mb-4" placeholder="E-mail">
+        <div class="d-flex justify-content-around"></div>
 
- 
-  <div class="d-flex justify-content-around">
-      
+        <!-- Sign in button -->
+        <button class="btn btn-info btn-block my-4" type="submit">
+          Reset Password
+        </button>
 
-  </div>
-
-  <!-- Sign in button -->
-  <button class="btn btn-info btn-block my-4" type="submit">Reset Password</button>
-
- 
-  <!-- Social login -->
-  
-
-</form>
-<!-- Default form login -->
-</div>
-<%- include('./common/footer'); %>
-<%- include('./common/script'); %>
+        <!-- Social login -->
+      </form>
+      <!-- Default form login -->
+    </div>
+    <%- include('./common/footer'); %> <%- include('./common/script'); %>
   </body>
 </html>

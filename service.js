@@ -6,16 +6,12 @@ module.exports = {
       const users = database.getAllUser();
       users.then(rows => {
         rows.forEach(element => {
-          console.log(element);
-          if (
-            user == element.user_name &&
-            pass == element.password &&
-            element.role == "admin"
-          ) {
+          if (user == element.Email && pass == element.Pasword) {
             console.log("Session created");
-            resolve(true);
+            resolve(element.userID);
           }
         });
+
         reject();
       });
     });

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Login</title>
+    <%- include('./common/link'); %> <%- include('./common/navbar',{nav:{
+    home:"active", road:"", work:"", user:data.user, username:data.username }});
+    %>
+
+    <style>
+      .col-md-4 {
+        margin-bottom: 2%;
+      }
+      .upload-btn-wrapper {
+        position: relative;
+        overflow: hidden;
+        display: inline-block;
+      }
+
+      .btn {
+        border: 2px solid gray;
+        color: gray;
+        background-color: white;
+        padding: 8px 20px;
+        border-radius: 8px;
+        font-size: 20px;
+        font-weight: bold;
+        cursor: pointer;
+      }
+
+      .upload-btn-wrapper input[type="file"] {
+        font-size: 100px;
+        position: absolute;
+        left: 0;
+        top: 0;
+        opacity: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      class="container"
+      style="margin-top:5%;margin-bottom:5%;padding-top:2%; "
+    >
+      <form
+        class="text-center border border-light p-5"
+        action="/addRoad"
+        method="POST"
+        enctype="multipart/form-data"
+      >
+        <div class="upload-btn-wrapper">
+          <button class="btn">Upload a file</button>
+          <input type="file" name="myfile" accept=".csv" />
+        </div>
+
+        <button class="btn btn-info my-4 btn-block" type="submit">
+          Add Road
+        </button>
+      </form>
+    </div>
+    <%- include('./common/footer'); %> <%- include('./common/script'); %>
+  </body>
+</html>

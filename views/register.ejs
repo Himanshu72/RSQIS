@@ -9,17 +9,28 @@
   <body>
     <div class="container" style="margin-top:5%;margin-bottom:5%;">
       <!-- Default form register -->
-      <form class="text-center border border-light p-5" action="#!">
+      <form
+        class="text-center border border-light p-5"
+        action="/register"
+        method="POST"
+      >
         <p class="h4 mb-4">Sign up</p>
 
+        <%if(data.error){%>
+        <div class="alert alert-danger">Some Thing Went</div>
+
+        <%}%>
         <div class="form-row mb-4">
           <div class="col">
             <!-- First name -->
+
             <input
               type="text"
               id="defaultRegisterFormFirstName"
               class="form-control"
               placeholder="First name"
+              name="fname"
+              maxlength="20"
               required
             />
           </div>
@@ -27,26 +38,22 @@
             <!-- Last name -->
             <input
               type="text"
+              name="lname"
               id="defaultRegisterFormLastName"
               class="form-control"
               placeholder="Last name"
+              maxlength="20"
               required
             />
           </div>
         </div>
 
         <!--Username-->
-        <input
-          type="text"
-          id="defaultRegisterFormUsername"
-          class="form-control mb-4"
-          placeholder="Username"
-          required
-        />
 
         <!-- E-mail -->
         <input
           type="email"
+          name="email"
           id="defaultRegisterFormEmail"
           class="form-control mb-4"
           placeholder="E-mail"
@@ -55,6 +62,7 @@
 
         <!-- Password -->
         <input
+          name="pass"
           type="password"
           id="defaultRegisterFormPassword"
           class="form-control"
@@ -62,15 +70,26 @@
           aria-describedby="defaultRegisterFormPasswordHelpBlock"
           required
         />
-
-        <!-- Phone number -->
         <br />
         <input
+          name="cpass"
+          type="text"
+          id="defaultRegisterFormUsername"
+          class="form-control mb-4"
+          placeholder="Confirm Password"
+          required
+        />
+
+        <!-- Phone number -->
+
+        <input
           type="number"
+          name="ph"
           id="defaultRegisterPhonePassword"
           class="form-control"
           placeholder="Phone number"
           aria-describedby="defaultRegisterFormPhoneHelpBlock"
+          pattern="[0-9]{10}"
           required
         />
 
@@ -85,6 +104,5 @@
       </form>
       <!-- Default form register -->
     </div>
-    <%- include('./common/footer'); %> <%- include('./common/script'); %>
   </body>
 </html>
