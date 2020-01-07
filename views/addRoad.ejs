@@ -47,9 +47,12 @@
         method="POST"
         enctype="multipart/form-data"
       >
+        <%if(data.msg){%>
+        <div class="alert alert-success"><%=data.msg%></div>
+        <%}%>
         <div class="upload-btn-wrapper">
           <button class="btn">Upload a file</button>
-          <input type="file" name="myfile" accept=".csv" />
+          <input type="file" name="myFile" />
         </div>
 
         <button class="btn btn-info my-4 btn-block" type="submit">

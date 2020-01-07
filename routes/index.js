@@ -3,19 +3,53 @@ var router = express.Router();
 var auth = require("../service");
 var database = require("./database");
 const { Validator } = require("node-input-validator");
-var mysql = require("mysql2/promise");
-var multer = require("multer");
+const multer = require("multer");
+const fs = require("fs");
 
-var storage = multer.diskStorage({
+const storage = multer.diskStorage({
   destination: function(req, file, callback) {
-    callback(null, "./data");
+    callback(null, "../public/img/");
   },
   filename: function(req, file, callback) {
-    callback(null, file.fieldname + "-" + Date.now());
+    callback(null, file.originalname);
   }
 });
 
-var upload = multer({ storage: storage }).array("userPhoto", 10);
+const fileFilter = function(req, file, callback) {
+  // accept images only
+  if (!file.originalname.match(/\.(csv)$/)) {
+    return callback(new Error("Only image files are allowed!"), false);
+  }
+  callback(null, true);
+};
+const upload = multer({ storage: storage, fileFilter: fileFilter });
+
+const moment = require("moment");
+
+router.post("/addRoad", (req, res, next) => {
+  if (req.session.user) {
+    var fstream;
+    req.pipe(req.busboy);
+    req.busboy.on("file", function(fieldname, file, filename) {
+      console.log("Uploading: " + filename);
+      name = Date.now() + filename;
+      fstream = fs.createWriteStream("./" + "/data/" + name);
+      file.pipe(fstream);
+      fstream.on("close", function() {
+        auth.readCSV(name);
+        res.render("addRoad", {
+          data: {
+            msg: "Successfully Updated",
+            user: true,
+            username: req.session.user
+          }
+        });
+      });
+    });
+  } else {
+    res.redirect("/");
+  }
+});
 
 router.get("/", function(req, res, next) {
   if (req.session.user) {
@@ -27,7 +61,11 @@ router.get("/", function(req, res, next) {
 /*POST register page*/
 router.get("/addRoad", (req, res) => {
   console.log(req.session.user);
-  res.render("addRoad", { data: { user: true, username: req.session.user } });
+  if (req.session.user) {
+    res.render("addRoad", { data: { user: true, username: req.session.user } });
+  } else {
+    res.redirect("/");
+  }
 });
 router.post("/register", function(req, res) {
   const v = new Validator(req.body, {
@@ -46,6 +84,7 @@ router.post("/register", function(req, res) {
       res.status(422).render("register", { data: { error: v.errors } });
     } else {
       if (req.body.pass == req.body.cpass) {
+        req.body.pass = auth.createSalt(req.body.pass);
         const users = database.addUser(req.body);
         users
           .then(function(rows) {
@@ -125,7 +164,7 @@ router.post("/forgot", (req, res) => {
       user = database.findUserById(req.body.email);
       user
         .then(result => {
-          database.sendEmail(result.Email);
+          database.sendEmail(result[0].Email, auth.undoSalt(result[0].Pasword));
           res.redirect("/");
         })
         .catch(() => {
@@ -136,7 +175,7 @@ router.post("/forgot", (req, res) => {
   //res.redirect("/");
 });
 
-/* GET road gallary page. */
+/* GET road gallary pag e. */
 router.get("/forgot", function(req, res, next) {
   if (req.session.user) {
     res.redirect("/" + req.session.id + "/filter_road");

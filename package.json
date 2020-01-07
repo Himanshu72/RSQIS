@@ -6,10 +6,14 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
+    "connect-busboy": "0.0.2",
     "cookie-parser": "~1.4.4",
+    "cryptr": "^6.0.1",
+    "csv-parser": "^2.3.2",
     "debug": "~2.6.9",
     "ejs": "~2.6.1",
     "express": "~4.16.1",
+    "express-fileupload": "^1.1.6",
     "express-session": "^1.16.2",
     "http-errors": "~1.6.3",
     "i": "^0.3.6",

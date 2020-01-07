@@ -76,11 +76,13 @@ module.exports.sendEmail = (email, pass) => {
   var mailOptions = {
     from: "eventspot07@gmail.com",
     to: email,
-    subject: "RSQIS",
-    text: "your password" + pass
+    subject: "RSQIS:Forgot your Password",
+    text: "your password is : " + pass
   };
 
   transporter.sendMail(mailOptions, function(error, info) {
+    console.log("email:" + email);
+    console.log("passwoard:" + pass);
     if (error) {
       console.log(error);
     } else {
