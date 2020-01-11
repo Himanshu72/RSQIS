@@ -27,12 +27,26 @@ const upload = multer({ storage: storage, fileFilter: fileFilter });
 const moment = require("moment");
 
 router.post("/addRoad", (req, res, next) => {
+  let roadname;
+
   if (req.session.user) {
     var fstream;
     req.pipe(req.busboy);
+    req.busboy.on("field", function(
+      fieldname,
+      val,
+      fieldnameTruncated,
+      valTruncated,
+      encoding,
+      mimetype
+    ) {
+      roadname = val;
+    });
+    let csvfile;
     req.busboy.on("file", function(fieldname, file, filename) {
       console.log("Uploading: " + filename);
       name = Date.now() + filename;
+      csvfile = name;
       fstream = fs.createWriteStream("./" + "/data/" + name);
       file.pipe(fstream);
       fstream.on("close", function() {
@@ -46,6 +60,12 @@ router.post("/addRoad", (req, res, next) => {
         });
       });
     });
+    req.busboy.on("finish", function() {
+      console.log(
+        `Roadname:${roadname} admin: ${req.session.id} filename: ${csvfile} `
+      );
+      database.addRoad(roadname, req.session.userID, csvfile);
+    });
   } else {
     res.redirect("/");
   }
@@ -53,7 +73,7 @@ router.post("/addRoad", (req, res, next) => {
 
 router.get("/", function(req, res, next) {
   if (req.session.user) {
-    res.redirect("/" + req.session.user + "/filter_road");
+    res.redirect("/" + req.session.userID + "/filter_road");
   } else {
     res.render("login", { data: { user: false } });
   }
@@ -117,9 +137,10 @@ router.post("/login", function(req, res, next) {
         .auth(username, password)
         .then(result => {
           req.session.user = username;
-          req.session.id = result;
+          console.log(result);
+          req.session.userID = result;
 
-          res.status(200).redirect("/" + req.session.id + "/filter_road");
+          res.status(200).redirect("/" + req.session.userID + "/filter_road");
         })
         .catch(() => {
           res.status(404).render("login", {
@@ -145,7 +166,7 @@ router.post("/login", function(req, res, next) {
 /* GET register page. */
 router.get("/register", function(req, res, next) {
   if (req.session.user) {
-    res.redirect("/" + req.session.user + "/filter_road");
+    res.redirect("/" + req.session.userID + "/filter_road");
   } else {
     res.render("register", { data: { user: false } });
   }

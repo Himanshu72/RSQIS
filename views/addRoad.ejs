@@ -50,9 +50,18 @@
         <%if(data.msg){%>
         <div class="alert alert-success"><%=data.msg%></div>
         <%}%>
+        <input
+          type="text"
+          name="roadName"
+          id="defaultLoginFormEmail"
+          class="form-control"
+          placeholder="Enter Road Name"
+          required
+        /><br />
+
         <div class="upload-btn-wrapper">
           <button class="btn">Upload a file</button>
-          <input type="file" name="myFile" />
+          <input type="file" name="myFile" accept=".csv" required />
         </div>
 
         <button class="btn btn-info my-4 btn-block" type="submit">

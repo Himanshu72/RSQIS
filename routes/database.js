@@ -1,5 +1,6 @@
 var mysql = require("mysql2/promise");
 var nodemailer = require("nodemailer");
+const config = require("../config");
 const uuid = require("uuid/v1");
 
 module.exports.getAllUser = async function() {
@@ -9,10 +10,8 @@ module.exports.getAllUser = async function() {
   const connection = await mysql.createConnection({
     host: "localhost",
     user: "root",
-    database: "rsqis"
+    database: "rsqis1"
   });
-  // query database
-
   return new Promise(async (resolve, reject) => {
     const [rows, fields] = await connection.execute("SELECT * FROM `users`");
     if (rows != null) resolve(rows);
@@ -24,7 +23,7 @@ module.exports.addUser = async function(data) {
   const connection = await mysql.createConnection({
     host: "localhost",
     user: "root",
-    database: "rsqis"
+    database: "rsqis1"
   });
 
   const rows = await connection.execute(
@@ -53,8 +52,9 @@ module.exports.findUserById = async email => {
   const connection = await mysql.createConnection({
     host: "localhost",
     user: "root",
-    database: "rsqis"
+    database: "rsqis1"
   });
+
   return new Promise(async (resolve, reject) => {
     const [rows, fields] = await connection.execute(
       "SELECT * FROM `users` where `Email`='" + email + "';"
@@ -68,8 +68,8 @@ module.exports.sendEmail = (email, pass) => {
   var transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
-      user: "eventspot07@gmail.com",
-      pass: "h4ck3d321"
+      user: config.email,
+      pass: config.pass
     }
   });
 
@@ -89,4 +89,22 @@ module.exports.sendEmail = (email, pass) => {
       console.log("Email sent: " + info.response);
     }
   });
+};
+module.exports.addRoad = async (roadname, userID, filename) => {
+  const connection = await mysql.createConnection({
+    host: "localhost",
+    user: "root",
+    database: "rsqis1"
+  });
+  const [rows, fields] = await connection.execute(
+    "INSERT INTO `road` (`roadID`, `roadName`, `admin`, `filePath`, `Timestamp`) VALUES ('" +
+      uuid() +
+      "', '" +
+      roadname +
+      "', '" +
+      userID +
+      "', '" +
+      filename +
+      "', current_timestamp())"
+  );
 };
