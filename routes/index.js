@@ -62,7 +62,7 @@ router.post("/addRoad", (req, res, next) => {
     });
     req.busboy.on("finish", function() {
       console.log(
-        `Roadname:${roadname} admin: ${req.session.id} filename: ${csvfile} `
+        `Roadname:${name} admin: ${req.session.id} filename: ${csvfile} `
       );
       database.addRoad(roadname, req.session.userID, csvfile);
     });
@@ -73,7 +73,7 @@ router.post("/addRoad", (req, res, next) => {
 
 router.get("/", function(req, res, next) {
   if (req.session.user) {
-    res.redirect("/" + req.session.userID + "/filter_road");
+    res.redirect("/" + req.session.userID + "/road");
   } else {
     res.render("login", { data: { user: false } });
   }
@@ -105,12 +105,12 @@ router.post("/register", function(req, res) {
     } else {
       if (req.body.pass == req.body.cpass) {
         req.body.pass = auth.createSalt(req.body.pass);
-        const users = database.addUser(req.body);
+        const users = database.addUser(req.body, "admin");
         users
           .then(function(rows) {
             res.status(200).redirect("/");
           })
-          .catch(() => {
+          .catch(e => {
             res
               .status(422)
               .render("register", { data: { error: "some thing went wrong" } });
@@ -126,7 +126,7 @@ router.post("/register", function(req, res) {
 /* POST login page. */
 router.post("/login", function(req, res, next) {
   if (req.session.user) {
-    res.redirect("/" + req.session.user + "/filter_road", {
+    res.redirect("/" + req.session.user + "/road", {
       data: { user: true }
     });
   } else {
@@ -140,7 +140,7 @@ router.post("/login", function(req, res, next) {
           console.log(result);
           req.session.userID = result;
 
-          res.status(200).redirect("/" + req.session.userID + "/filter_road");
+          res.status(200).redirect("/" + req.session.userID + "/road");
         })
         .catch(() => {
           res.status(404).render("login", {
@@ -166,7 +166,7 @@ router.post("/login", function(req, res, next) {
 /* GET register page. */
 router.get("/register", function(req, res, next) {
   if (req.session.user) {
-    res.redirect("/" + req.session.userID + "/filter_road");
+    res.redirect("/" + req.session.userID + "/road");
   } else {
     res.render("register", { data: { user: false } });
   }
@@ -199,17 +199,27 @@ router.post("/forgot", (req, res) => {
 /* GET road gallary pag e. */
 router.get("/forgot", function(req, res, next) {
   if (req.session.user) {
-    res.redirect("/" + req.session.id + "/filter_road");
+    res.redirect("/" + req.session.id + "/road");
   } else {
     res.render("forgot", { data: { user: false } });
   }
 });
 
 /* GET road gallary page. */
-router.get("/:user/filter_road", function(req, res, next) {
+router.get("/:user/road", function(req, res, next) {
   if (req.session.user) {
-    res.render("road_gallary", {
-      data: { user: true, username: req.session.user }
+    if (req.params.user != req.session.userID) {
+      res.redirect("/" + req.session.userID + "/road");
+    }
+    let roads = database.getAllRoad();
+    roads.then(result => {
+      res.render("road_gallary", {
+        data: {
+          user: true,
+          username: req.session.user,
+          roads: result
+        }
+      });
     });
   } else {
     res.redirect("/");
@@ -219,6 +229,9 @@ router.get("/:user/filter_road", function(req, res, next) {
 /* GET road page. */
 router.get("/:user/road/:id", function(req, res, next) {
   if (req.session.user) {
+    if (req.session.userID != req.params.user) {
+      res.redirect("/" + req.session.userID + "/road/" + req.params.id);
+    }
     res.render("road", { data: { user: true, username: req.session.user } });
   } else {
     res.redirect("/");

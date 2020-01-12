@@ -19,7 +19,7 @@ module.exports.getAllUser = async function() {
   });
 };
 
-module.exports.addUser = async function(data) {
+module.exports.addUser = async function(data, type) {
   const connection = await mysql.createConnection({
     host: "localhost",
     user: "root",
@@ -27,9 +27,9 @@ module.exports.addUser = async function(data) {
   });
 
   const rows = await connection.execute(
-    "INSERT INTO `users` (`userID`,`Email`, `Phone`, `Firstname`, `Lastname`, `Pasword`, `Timestamp`) VALUES ('" +
+    "INSERT INTO `users` (`userID`, `Email`, `Phone`, `Firstname`, `Lastname`, `Pasword`, `role`, `Timestamp`) VALUES ('" +
       uuid() +
-      "','" +
+      "+`', '" +
       data.email +
       "', '" +
       data.ph +
@@ -39,6 +39,8 @@ module.exports.addUser = async function(data) {
       data.lname +
       "', '" +
       data.pass +
+      "','" +
+      type +
       "', current_timestamp());"
   );
   // console.log(rows);
@@ -63,6 +65,8 @@ module.exports.findUserById = async email => {
     else reject();
   });
 };
+
+module.exports.getRoad = () => {};
 
 module.exports.sendEmail = (email, pass) => {
   var transporter = nodemailer.createTransport({
@@ -97,14 +101,27 @@ module.exports.addRoad = async (roadname, userID, filename) => {
     database: "rsqis1"
   });
   const [rows, fields] = await connection.execute(
-    "INSERT INTO `road` (`roadID`, `roadName`, `admin`, `filePath`, `Timestamp`) VALUES ('" +
+    "INSERT INTO `road`(`roadID`, `roadName`, `admin`, `filePath`) VALUES ('" +
       uuid() +
-      "', '" +
+      "','" +
       roadname +
-      "', '" +
+      "','" +
       userID +
-      "', '" +
+      "','" +
       filename +
-      "', current_timestamp())"
+      "');"
   );
+};
+module.exports.getAllRoad = async () => {
+  const connection = await mysql.createConnection({
+    host: "localhost",
+    user: "root",
+    database: "rsqis1"
+  });
+  return new Promise(async (resolve, reject) => {
+    const [rows, fields] = await connection.execute(
+      "SELECT * FROM `road` WHERE Status='untouch'"
+    );
+    resolve(rows);
+  });
 };

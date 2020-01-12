@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Login</title>
+    <title>RSQIS</title>
     <%- include('./common/link'); %>
     <%- include('./common/navbar',{nav:{
       home:"",
@@ -18,69 +18,31 @@
     </style>
   </head>
   <body>
+  
 <div class="container" style="margin-top:5%;margin-bottom:5%;padding-top:2%; ">
  <div class="row">
-     <div class="col-md-4">
+  <% for( const road of data.roads ){ %>
+     <div class="col-md-4 text-center">
     <!-- Card -->
 <div class="card card-image" style="background-image: url(https://mdbootstrap.com/img/Photos/Horizontal/Work/4-col/img%20%2814%29.jpg);">
 
     <!-- Content -->
     <div class="text-white text-center d-flex align-items-center rgba-black-strong py-5 px-4">
-      <div>
+      <div class="text-center " style="margin: auto;">
         <h5 class="pink-text"><i class="fas fa-chart-pie"></i> Road Devlopment</h5>
-        <h3 class="card-title pt-2"><strong>CG Road</strong></h3>
-        <p>this road have some serious damange </p>
-        <a class="btn btn-pink"><i class="fas fa-clone left"></i> View Road</a>
+        
+        <h3 class="card-title pt-2" ><strong><%=road.roadName%></strong></h3><br>
+        
+        <a class="btn btn-pink" href="/user/road/<%=road.roadID%>"><i class="fas fa-clone left"></i> View Road</a>
+        
       </div>
     </div>
   </div>
   </div>
+  <%}%>
   
-      <div class="col-md-4">
-            <!-- Card -->
-        <div class="card card-image" style="background-image: url(https://mdbootstrap.com/img/Photos/Horizontal/Work/4-col/img%20%2814%29.jpg);">
-        
-            <!-- Content -->
-            <div class="text-white text-center d-flex align-items-center rgba-black-strong py-5 px-4">
-              <div>
-                <h5 class="pink-text"><i class="fas fa-chart-pie"></i> Road Devlopment</h5>
-                <h3 class="card-title pt-2"><strong>SG Highway</strong></h3>
-                <p>this road have some serious damange </p>
-                <a class="btn btn-pink"><i class="fas fa-clone left"></i> View Road</a>
-              </div>
-            </div>
-          </div>
-          </div>
-          <div class="col-md-4">
-                <!-- Card -->
-            <div class="card card-image" style="background-image: url(https://mdbootstrap.com/img/Photos/Horizontal/Work/4-col/img%20%2814%29.jpg);">
+     
             
-                <!-- Content -->
-                <div class="text-white text-center d-flex align-items-center rgba-black-strong py-5 px-4">
-                  <div>
-                    <h5 class="pink-text"><i class="fas fa-chart-pie"></i> Road Devlopment</h5>
-                    <h3 class="card-title pt-2"><strong>Paldi 4 road</strong></h3>
-                    <p>this road have some serious damange </p>
-                    <a class="btn btn-pink"><i class="fas fa-clone left"></i> View Road</a>
-                  </div>
-                </div>
-              </div>
-              </div>
-              <div class="col-md-4">
-                    <!-- Card -->
-                <div class="card card-image" style="background-image: url(https://mdbootstrap.com/img/Photos/Horizontal/Work/4-col/img%20%2814%29.jpg);">
-                
-                    <!-- Content -->
-                    <div class="text-white text-center d-flex align-items-center rgba-black-strong py-5 px-4">
-                      <div>
-                        <h5 class="pink-text"><i class="fas fa-chart-pie"></i> Road Devlopment</h5>
-                        <h3 class="card-title pt-2"><strong>Panchvati 5 Road</strong></h3>
-                        <p>this road have some serious damange </p>
-                        <a class="btn btn-pink"><i class="fas fa-clone left"></i> View Road</a>
-                      </div>
-                    </div>
-                  </div>
-                  </div>
   
   <!-- Card -->
 </div>
