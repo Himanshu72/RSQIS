@@ -14,7 +14,8 @@ module.exports = {
         rows.forEach(element => {
           if (
             user == element.Email &&
-            pass == cryptr.decrypt(element.Pasword)
+            pass == cryptr.decrypt(element.Pasword) &&
+            element.role == "admin"
           ) {
             console.log("Session created");
 

@@ -5,7 +5,7 @@ var database = require("./database");
 const { Validator } = require("node-input-validator");
 const multer = require("multer");
 const fs = require("fs");
-
+const fileType = require("file-type");
 const storage = multer.diskStorage({
   destination: function(req, file, callback) {
     callback(null, "../public/img/");
@@ -14,15 +14,6 @@ const storage = multer.diskStorage({
     callback(null, file.originalname);
   }
 });
-
-const fileFilter = function(req, file, callback) {
-  // accept images only
-  if (!file.originalname.match(/\.(csv)$/)) {
-    return callback(new Error("Only image files are allowed!"), false);
-  }
-  callback(null, true);
-};
-const upload = multer({ storage: storage, fileFilter: fileFilter });
 
 const moment = require("moment");
 
@@ -45,19 +36,14 @@ router.post("/addRoad", (req, res, next) => {
     let csvfile;
     req.busboy.on("file", function(fieldname, file, filename) {
       console.log("Uploading: " + filename);
-      name = Date.now() + filename;
-      csvfile = name;
+      if (filename) name = filename;
+      if (name.substring(name.length - 3, name.length) == "csv") {
+        csvfile = name;
+      }
       fstream = fs.createWriteStream("./" + "/data/" + name);
       file.pipe(fstream);
       fstream.on("close", function() {
-        auth.readCSV(name);
-        res.render("addRoad", {
-          data: {
-            msg: "Successfully Updated",
-            user: true,
-            username: req.session.user
-          }
-        });
+        //auth.readCSV(name);
       });
     });
     req.busboy.on("finish", function() {
@@ -65,6 +51,13 @@ router.post("/addRoad", (req, res, next) => {
         `Roadname:${name} admin: ${req.session.id} filename: ${csvfile} `
       );
       database.addRoad(roadname, req.session.userID, csvfile);
+      res.render("addRoad", {
+        data: {
+          msg: "Successfully Updated",
+          user: true,
+          username: req.session.user
+        }
+      });
     });
   } else {
     res.redirect("/");
@@ -111,6 +104,7 @@ router.post("/register", function(req, res) {
             res.status(200).redirect("/");
           })
           .catch(e => {
+            console.log(e);
             res
               .status(422)
               .render("register", { data: { error: "some thing went wrong" } });
@@ -162,13 +156,12 @@ router.post("/login", function(req, res, next) {
     }
   }
 });
-
 /* GET register page. */
 router.get("/register", function(req, res, next) {
   if (req.session.user) {
     res.redirect("/" + req.session.userID + "/road");
   } else {
-    res.render("register", { data: { user: false } });
+    res.render("register", { data: { user: false, route: "/register" } });
   }
 });
 
@@ -232,7 +225,87 @@ router.get("/:user/road/:id", function(req, res, next) {
     if (req.session.userID != req.params.user) {
       res.redirect("/" + req.session.userID + "/road/" + req.params.id);
     }
-    res.render("road", { data: { user: true, username: req.session.user } });
+    const roads = database.getAllRoad();
+    let currentRoad;
+    roads.then(result => {
+      let flag = true;
+      for (let road of result) {
+        if (road.roadID == req.params.id) {
+          currentRoad = road;
+          flag = false;
+          break;
+        }
+      }
+      if (flag) {
+        res.redirect("/" + req.session.userID + "/road");
+      } else {
+        console.log(currentRoad);
+        res.render("road", {
+          data: { user: true, username: req.session.user }
+        });
+      }
+    });
+  } else {
+    res.redirect("/");
+  }
+});
+
+router.post("/registerWorker", function(req, res) {
+  const v = new Validator(req.body, {
+    email: "required|email|maxLength:50",
+    fname: "required|maxLength:20",
+    lname: "required|maxLength:20",
+    pass: "required",
+    cpass: "required",
+    ph: "required|minLength:10|maxLength:10"
+  });
+
+  v.check().then(matched => {
+    if (!matched) {
+      console.log(v.errors);
+
+      res.status(422).render("register", { data: { error: v.errors } });
+    } else {
+      if (req.body.pass == req.body.cpass) {
+        req.body.pass = auth.createSalt(req.body.pass);
+        const users = database.addUser(req.body, "worker");
+        users
+          .then(function(rows) {
+            res.status(200).redirect("/addWorker");
+          })
+          .catch(e => {
+            res
+              .status(422)
+              .render("register", { data: { error: "some thing went wrong" } });
+          });
+      } else {
+        res.status(422).render("register", { data: { error: "pass!=cpass" } });
+      }
+    }
+  });
+  //res.redirect("/");
+});
+router.get("/mngworker", function(req, res, next) {
+  if (req.session.user) {
+    const workers = database.getAllWorker();
+    workers
+      .then(result => {
+        res.render("viewUser", {
+          data: { user: result, username: req.session.user }
+        });
+      })
+      .catch(() => {
+        res.status(401).send("Some thing went wrong");
+      });
+  } else {
+    res.redirect("/");
+  }
+});
+
+/* GET road complaint page. */
+router.get("/addworker", function(req, res, next) {
+  if (req.session.user) {
+    res.render("register", { data: { user: false, route: "/registerWorker" } });
   } else {
     res.redirect("/");
   }

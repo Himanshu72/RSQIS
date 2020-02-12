@@ -3,6 +3,25 @@ var nodemailer = require("nodemailer");
 const config = require("../config");
 const uuid = require("uuid/v1");
 
+module.exports.getAllWorker = async function() {
+  // get the client
+
+  // create the connection
+  const connection = await mysql.createConnection({
+    host: "localhost",
+    user: "root",
+    password: "mysql",
+    database: "rsqis1"
+  });
+  return new Promise(async (resolve, reject) => {
+    const [rows, fields] = await connection.execute(
+      "SELECT * FROM `users` where role='worker'"
+    );
+    if (rows != null) resolve(rows);
+    else reject();
+  });
+};
+
 module.exports.getAllUser = async function() {
   // get the client
 
@@ -10,6 +29,7 @@ module.exports.getAllUser = async function() {
   const connection = await mysql.createConnection({
     host: "localhost",
     user: "root",
+    password: "mysql",
     database: "rsqis1"
   });
   return new Promise(async (resolve, reject) => {
@@ -23,6 +43,7 @@ module.exports.addUser = async function(data, type) {
   const connection = await mysql.createConnection({
     host: "localhost",
     user: "root",
+    password: "mysql",
     database: "rsqis1"
   });
 
@@ -54,6 +75,7 @@ module.exports.findUserById = async email => {
   const connection = await mysql.createConnection({
     host: "localhost",
     user: "root",
+    password: "mysql",
     database: "rsqis1"
   });
 
@@ -66,7 +88,22 @@ module.exports.findUserById = async email => {
   });
 };
 
-module.exports.getRoad = () => {};
+module.exports.getRoadById = async id => {
+  const connection = await mysql.createConnection({
+    host: "localhost",
+    user: "root",
+    password: "mysql",
+    database: "rsqis1"
+  });
+
+  return new Promise(async (resolve, reject) => {
+    const [rows, fields] = await connection.execute(
+      "SELECT * FROM `road` where `roadID`='" + id + "';"
+    );
+    if (rows.length > 0) resolve(rows);
+    else reject();
+  });
+};
 
 module.exports.sendEmail = (email, pass) => {
   var transporter = nodemailer.createTransport({
@@ -98,6 +135,7 @@ module.exports.addRoad = async (roadname, userID, filename) => {
   const connection = await mysql.createConnection({
     host: "localhost",
     user: "root",
+    password: "mysql",
     database: "rsqis1"
   });
   const [rows, fields] = await connection.execute(
@@ -116,11 +154,27 @@ module.exports.getAllRoad = async () => {
   const connection = await mysql.createConnection({
     host: "localhost",
     user: "root",
+    password: "mysql",
     database: "rsqis1"
   });
   return new Promise(async (resolve, reject) => {
     const [rows, fields] = await connection.execute(
       "SELECT * FROM `road` WHERE Status='untouch'"
+    );
+    resolve(rows);
+  });
+};
+module.exports.deleteWorkerByID = async id => {
+  const connection = await mysql.createConnection({
+    host: "localhost",
+    user: "root",
+    password: "mysql",
+    database: "rsqis1"
+  });
+
+  return new Promise(async (resolve, reject) => {
+    const [rows, fields] = await connection.execute(
+      "DELETE FROM `users` WHERE `users`.`userID` = '" + id + "'"
     );
     resolve(rows);
   });
