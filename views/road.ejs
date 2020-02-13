@@ -2,115 +2,161 @@
 <html>
   <head>
     <title>RSQIS</title>
-    <%- include('./common/link'); %>
-    <%- include('./common/navbar',{nav:{
-      home:"",
-      road:"active",
-      work:"",
-      user:data.user,
-      username:data.username   
-    }}); %>
+    <%- include('./common/link'); %> <%- include('./common/navbar',{nav:{
+    home:"", road:"active", work:"", user:data.user, username:data.username }});
+    %>
     <style>
-        body{
-            text-align: center;
-        }
+      body {
+        text-align: center;
+      }
     </style>
   </head>
   <body>
-<div class="container-fluid" style="margin-top:5%;margin-bottom:5%;">
-        <div class="row">
-                <div class="col-md-12" id="map_canvas" style="height: 300px">
-                
-                
-                </div>
-            </div>
-            <div class="row" style="margin-top:1%;">
-                <div class="col-md-4">
-                    <button class="btn btn-outline-success" >Point A <i class="far fa-play-circle"></i></button>
-                </div>
-                <div class="col-md-4">
-                        <button class="btn btn-outline-success" >Point B <i class="far fa-play-circle"></i></button>
-                    </div>
-                    <div class="col-md-4">
-                            <button class="btn btn-outline-success" >Point C <i class="far fa-play-circle"></i></button>
-                        </div>
-                
-                </div>
-                
-                <div class="row">
-                <div class="col-6">
-                <button class="btn btn-primary " style="width: 100%;" >Check Daily Prof</button>
-                </div>
-                
-                <div class="col-6">
-                        <button class="btn btn-danger " style="width: 100%;" >remove road</button>
-                
-                </div>
-
-            </div>
-              
-                <div class="row text-center">
-                        <div class="col-md-12">
-                      <textarea placeholder="Send Notification" style="width: 100%;" rows="3" ></textarea>
-                        </div>
-                        
-                        <div class="col-md-12">
-                                <button class="btn btn-outline-primary " style="width: 100%;border-radius:40px " >Send Notification</button>
-                        
-                        </div>
-                
-                </div>
-
-
-<%- include('./common/footer'); %>
-<%- include('./common/script'); %>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBURXw2Qd9JRmA_zcZnIymC1ID5ioc2C-8&callback=initMap"
-    async defer></script>
-    <script>
-        
-     
-        initMap();
-        function initMap() {
-          var myLatLng = {lat: 23.0038795, lng: 72.6208747};
-          var myLatLng2 = {lat: 23.003839997347036, lng: 72.6194584936402};
-          var myLatLng3 = {lat:23.00350422433, lng: 72.61769896452643}; 
-        var map = new google.maps.Map(document.getElementById('map_canvas'), {
-          zoom: 16,
-          center: myLatLng
-        });
-
-        var marker = new google.maps.Marker({
-          position: myLatLng,
-          map: map,
-          draggable: true,
-          title: 'Point A'
-        });
-
-        var marker = new google.maps.Marker({
-          position: myLatLng2,
-          map: map,
-          draggable: true,
-          title: 'Point B'
-        });
-
-        var marker = new google.maps.Marker({
-          position: myLatLng3,
-          map: map,
-          draggable: true,
-          title: 'Point C'
-        });
-           
-      google.maps.event.addListener(marker, 'dragend', function (event) {
-          console.log(event.latLng.lat(),event.latLng.lng());
-   //drag event
-});
-
     
-           
-           
-}
-         
-    
+
+
+      <div class="container-fluid" style="margin-top:5%;margin-bottom:5%;">
+              <div class="row">
+                      <div class="col-md-12" id="map_canvas" style="height: 300px">
+
+
+                      </div>
+                  </div>
+                  <div class="row" style="margin-top:1%; text-align: center;">
+                    <div class="col col-6">
+                    <button class="btn btn-outline-success" onclick="fil('<%=data.curRoad%>')" >Filter This Road <i class="far fa-play-circle"></i></button>
+                       </div>
+                       <div class="col col-6">
+                        <button class="btn btn-outline-danger" onclick="rej('<%=data.curRoad%>')"  >Reject This Road <i class="far fa-play-circle"></i></button>
+                           </div>
+                      </div>
+                       
+                        <div class="jumbotron" >
+                          <h3><B>Date:<%=data.data[0].Date%></B></h3>
+                          <div id="curve_chart" style="width: 900px; height: 500px"></div>
+
+                        </div>
+                         
+                    
+
+
+
+      <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Video</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+                <div class="embed-responsive embed-responsive-21by9" id="vid" >
+
+            <iframe class="embed-responsive-item" src="#" id="frm">
+              <button class="btn btn-danger" style="position: absolute; z-index: 10; ">CLOSE</button>
+            </iframe>
+          </div >
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+            </div>
+          </div>
+        </div>
+      </div>
+      <%- include('./common/footer'); %>
+      <%- include('./common/script'); %>
+      <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBURXw2Qd9JRmA_zcZnIymC1ID5ioc2C-8&callback=initMap"
+          async defer>
     </script>
-</body>
+    <script>
+
+
+              initMap();
+              function initMap() {
+                var myLatLng = {lat: 23.0038795, lng: 72.6208747};
+                var myLatLng2 = {lat: 23.003839997347036, lng: 72.6194584936402};
+                var myLatLng3 = {lat:23.00350422433, lng: 72.61769896452643};
+              var map = new google.maps.Map(document.getElementById('map_canvas'), {
+                zoom: 16,
+                center: {lat:<%=data.data[0].Latitude%>,lng:<%=data.data[0].Longitude%>}
+              });
+
+              <%for(let ele of data.data ){%>
+                var marker = new google.maps.Marker({
+                position: {lat:<%=ele.Latitude%>,lng:<%=ele.Longitude%>},
+                map: map,
+                title: 'Bad Quality road'
+              });
+
+            google.maps.event.addListener(marker, 'click', function (event) {
+
+              $('#frm').attr('src', "/data/<%=ele.video%>.mp4")
+              $('#myModal').modal('show');
+
+          });
+              <%}%>
+
+
+
+
+
+
+      }
+    </script>
+    <script
+    type="text/javascript"
+    src="https://www.gstatic.com/charts/loader.js"
+  ></script>
+  <script type="text/javascript">
+          google.charts.load('current', {'packages':['corechart']});
+          google.charts.setOnLoadCallback(drawChart);
+
+          function drawChart() {
+            var data = google.visualization.arrayToDataTable([
+              ['Time', 'x', 'y',"Z"],
+              <%for(let ele of data.data){%>
+              ['<%=ele.Time%>',<%=ele.XAxis%>,<%=ele.YAxis%>,<%=ele.ZAxis%>],
+              
+              <%}%>
+            ]);
+
+            var options = {
+              title: '3 axisi comparision',
+              curveType: 'function',
+              legend: { position: 'bottom' }
+            };
+
+            var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+
+            chart.draw(data, options);
+          }
+        </script>
+    <script>
+      function fil(id) {
+        $.ajax({
+          type: "PUT",
+          url: "http://localhost:3000/road/filter/" + id,
+          success: function(resullt) {
+            setTimeout(function() {
+              location.reload();
+            }, 500);
+          }
+        });
+      }
+      function rej(id) {
+        $.ajax({
+          type: "PUT",
+          url: "http://localhost:3000/road/reject/" + id,
+          success: function(resullt) {
+            setTimeout(function() {
+              location.reload();
+            }, 500);
+          }
+        });
+      }
+    </script>
+  </body>
 </html>

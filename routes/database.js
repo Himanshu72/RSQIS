@@ -179,3 +179,41 @@ module.exports.deleteWorkerByID = async id => {
     resolve(rows);
   });
 };
+
+module.exports.filterRoad = async function(id) {
+  const connection = await mysql.createConnection({
+    host: "localhost",
+    user: "root",
+    password: "mysql",
+    database: "rsqis1"
+  });
+  const [rows, fields] = await connection.execute(
+    "UPDATE `road` SET `Status` = 'filtered' WHERE `road`.`roadID` = '" +
+      id +
+      "';"
+  );
+
+  return new Promise((resolve, reject) => {
+    if (rows != null) resolve(rows);
+    else reject();
+  });
+};
+
+module.exports.rejectRoad = async function(id) {
+  const connection = await mysql.createConnection({
+    host: "localhost",
+    user: "root",
+    password: "mysql",
+    database: "rsqis1"
+  });
+  const [rows, fields] = await connection.execute(
+    "UPDATE `road` SET `Status` = 'rejected' WHERE `road`.`roadID` = '" +
+      id +
+      "';"
+  );
+
+  return new Promise((resolve, reject) => {
+    if (rows != null) resolve(rows);
+    else reject();
+  });
+};

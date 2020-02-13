@@ -3,19 +3,9 @@ var router = express.Router();
 var auth = require("../service");
 var database = require("./database");
 const { Validator } = require("node-input-validator");
-const multer = require("multer");
-const fs = require("fs");
-const fileType = require("file-type");
-const storage = multer.diskStorage({
-  destination: function(req, file, callback) {
-    callback(null, "../public/img/");
-  },
-  filename: function(req, file, callback) {
-    callback(null, file.originalname);
-  }
-});
 
-const moment = require("moment");
+const fs = require("fs");
+const csv = require("csv-parser");
 
 router.post("/addRoad", (req, res, next) => {
   let roadname;
@@ -36,13 +26,23 @@ router.post("/addRoad", (req, res, next) => {
     let csvfile;
     req.busboy.on("file", function(fieldname, file, filename) {
       console.log("Uploading: " + filename);
+      vid = false;
+      vidname = "";
       if (filename) name = filename;
+
       if (name.substring(name.length - 3, name.length) == "csv") {
         csvfile = name;
+        vid - false;
+      } else {
+        vid = true;
+        vidname = name;
       }
-      fstream = fs.createWriteStream("./" + "/data/" + name);
+      fstream = fs.createWriteStream("./" + "/public/data/" + name);
       file.pipe(fstream);
       fstream.on("close", function() {
+        if (vid) {
+          auth.h264Tomp4("./public/data/" + vidname);
+        }
         //auth.readCSV(name);
       });
     });
@@ -240,9 +240,23 @@ router.get("/:user/road/:id", function(req, res, next) {
         res.redirect("/" + req.session.userID + "/road");
       } else {
         console.log(currentRoad);
-        res.render("road", {
-          data: { user: true, username: req.session.user }
-        });
+        let filedata = [];
+        fs.createReadStream("./public/data/" + currentRoad.filePath)
+          .pipe(csv())
+          .on("data", row => {
+            filedata.push(row);
+          })
+          .on("end", () => {
+            res.render("road", {
+              data: {
+                user: true,
+                username: req.session.user,
+                data: filedata,
+                curRoad: req.params.id
+              }
+            });
+            console.log("CSV file successfully processed");
+          });
       }
     });
   } else {
@@ -327,6 +341,42 @@ router.get("/logout", function(req, res, next) {
     console.log(err);
   });
   res.redirect("/");
+});
+
+router.put("/road/filter/:id", (req, res) => {
+  const fil = database.filterRoad(req.params.id);
+  fil
+    .then(
+      res.send({
+        op: true,
+        msg: "Successfully done"
+      })
+    )
+    .catch(e => {
+      console.log(e);
+      res.send({
+        op: false,
+        msg: "Something went wrong"
+      });
+    });
+});
+
+router.put("/road/reject/:id", (req, res) => {
+  const fil = database.rejectRoad(req.params.id);
+  fil
+    .then(
+      res.send({
+        op: true,
+        msg: "Successfully done"
+      })
+    )
+    .catch(e => {
+      console.log(e);
+      res.send({
+        op: false,
+        msg: "Something went wrong"
+      });
+    });
 });
 
 module.exports = router;

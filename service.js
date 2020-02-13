@@ -3,7 +3,7 @@ var config = require("./config");
 const Cryptr = require("cryptr");
 const csv = require("csv-parser");
 const fs = require("fs");
-
+const hbjs = require("handbrake-js");
 const cryptr = new Cryptr(config.secret);
 
 module.exports = {
@@ -36,13 +36,24 @@ module.exports = {
     return decryptedString;
   },
   readCSV: function(file) {
+    let data = [];
     fs.createReadStream("./data/" + file)
       .pipe(csv())
       .on("data", row => {
-        // console.log(row);
+        data.push(1);
+        console.log(row);
       })
       .on("end", () => {
         console.log("CSV file successfully processed");
+        return data;
       });
+  },
+  h264Tomp4: function(file) {
+    hbjs
+      .spawn({ input: file, output: file + ".mp4" })
+      .on("error", err => {
+        console.log(err);
+      })
+      .on("progress", progress => {});
   }
 };
