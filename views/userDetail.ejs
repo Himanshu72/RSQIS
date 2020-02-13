@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>RSQIS</title>
+    <%- include('./common/link'); %> <%- include('./common/navbar',{nav:{
+    home:"", road:"", work:"", user:data.user, username:data.username }}); %>
+    <style>
+      body {
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container" style="margin-top:5%;margin-bottom:5%;"></div>
+
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Email</th>
+          <th scope="col">name</th>
+          <th scope="col">Phone</th>
+          <th scope="col">Role</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row">1</th>
+          <td><%=data.user[0].Email%></td>
+          <td><%=data.user[0].Firstname%> <%=data.user.Lastname%></td>
+          <td><%=data.user[0].Phone%></td>
+          <td><%=data.user[0].role%></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Modal -->
+  </body>
+</html>

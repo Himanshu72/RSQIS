@@ -28,9 +28,11 @@
         </tr>
       </thead>
       <tbody>
+        <%let x=0%>
         <% for(let worker of data.user){%>
-        <tr>
-          <th scope="row">1</th>
+        <%x++%>
+          <tr>
+          <th scope="row"><%=x%></th>
           <td><%=worker.Firstname%> <%=worker.Lastname%></td>
           <td><%=worker.Email%></td>
           <td><%=worker.Phone%></td>

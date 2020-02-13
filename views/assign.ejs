@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>RSQIS</title>
+    <%- include('./common/link'); %> <%- include('./common/navbar',{nav:{
+    home:"", road:"", work:"", user:data.user, username:data.username }}); %>
+    <style>
+      body {
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container" style="margin-top:5%;margin-bottom:5%;">
+        <!-- Default form register -->
+        <form
+          class="text-center border border-light p-5"
+          action="/assignWork"
+          method="POST"
+        >
+          <p class="h4 mb-4">Assgin Work</p>
+  
+          <select class="browser-default custom-select" name="workername" required>
+            <option selected disabled value="-1">Select Worker Name</option>
+            <%for(let ele of data.worker){%>
+                <option value="<%=ele.userID%>"><%=ele.Email%></option>
+                <%}%>
+          </select>
+          <br><br>
+          <select class="browser-default custom-select" name="roadname" required>
+            <option selected disabled value="-1">select Road name</option>
+            <%for(let ele of data.roads){%>
+            <option value="<%=ele.roadID%>"><%=ele.roadName%></option>
+            <%}%>
+          </select>
+            <br><br>
+            <textarea rows="2" class="form-control" name="desc" required placeholder="Enter description"></textarea>
+          <button class="btn btn-info my-4 btn-block" type="submit">
+           Assign Work
+          </button>
+  
+          <!-- Social register -->
+        </form>
+        <a href="/allAlocation"><button class="btn btn-success text-center">Check Work Allocation</button></a>
+     
+    <%- include('./common/footer'); %> <%- include('./common/script'); %>
+  </body>
+</html>

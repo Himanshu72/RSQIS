@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>RSQIS</title>
+    <%- include('./common/link'); %> <%- include('./common/navbar',{nav:{
+    home:"", road:"", work:"", user:data.user, username:data.username }});
+    %>
+    <style>
+      body {
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container" style="margin-top:5%;margin-bottom:5%;"></div>
+
+    
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Woker ID</th>
+          <th scope="col">Road ID</th>
+          <th scope="col">Admin ID</th>
+          <th scope="col">remove</th>
+        </tr>
+      </thead>
+      <tbody>
+          <%let x=0%>
+        <% for(let ele of data.alloc){%>
+        <%x++%>
+            <tr>
+          <th scope="row"><%=x%></th>
+          <td><a href="/user/detail/<%=ele.workerID%>"><%=ele.workerID%></a></td>
+          <td><a href="/road/detail/<%=ele.roadID%>"><%=ele.roadID%></a> </td>
+          <td><a href="/user/detail/<%=ele.adminID%>"><%=ele.adminID%></a></td>
+          <td><button type="button" class="btn btn-sm btn-danger" data-toggle="modal"  onclick="fun(this)" id="<%=ele.allocateID%>"    data-target="#basicExampleModal">
+            remove
+          </button>
+          </button></td>
+        </tr>
+        <%}%>
+      </tbody>
+    </table>
+    <%- include('./common/footer'); %>
+    <%- include('./common/script'); %>
+<script>
+function fun(me){
+    
+    $.ajax({
+    url: 'http://localhost:3000/delete/alloc/'+me.id,
+    type: 'DELETE',
+    success: function(result) {
+        location.reload();
+    }
+});
+}
+</script>
+    <!-- Modal -->
+      </body>
+</html>

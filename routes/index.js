@@ -379,4 +379,115 @@ router.put("/road/reject/:id", (req, res) => {
     });
 });
 
+router.get("/assignWork", (req, res) => {
+  if (req.session.user) {
+    const roads = database.getAllFilterdRoad();
+    roads
+      .then(result => {
+        roadrows = result;
+        const workers = database.getAllWorker();
+        workers
+          .then(data => {
+            const workerrows = data;
+            res.render("assign", {
+              data: {
+                user: true,
+                username: req.session.user,
+                roads: roadrows,
+                worker: workerrows
+              },
+              username: req.session.user
+            });
+          })
+          .catch(() => {
+            res.send("Something went wrong");
+          });
+      })
+      .catch(() => {
+        res.send("Something went wrong");
+      });
+  } else {
+    res.redirect("/");
+  }
+});
+
+router.post("/assignWork", (req, res) => {
+  if (req.session.user) {
+    database
+      .allcateWork(
+        req.body.workername,
+        req.session.userID,
+        req.body.roadname,
+        req.body.desc
+      )
+      .then(() => {
+        res.redirect("/assignWork");
+      })
+      .catch(() => {
+        res.send("something went wrong");
+      });
+  } else {
+    res.redirect("/");
+  }
+});
+
+router.get("/allAlocation", (req, res) => {
+  if (req.session.user) {
+    const all = database.getAllAlocation();
+    all
+      .then(result => {
+        res.render("checkAllocation", {
+          data: { alloc: result, username: req.session.user }
+        });
+      })
+      .catch(() => {
+        res.send("somethinf went wrong");
+      });
+  } else {
+    res.redirect("/");
+  }
+});
+
+router.get("/user/detail/:id", (req, res) => {
+  if (req.session.user) {
+    const user = database.getUserById(req.params.id);
+    user
+      .then(result => {
+        res.render("userDetail", {
+          data: { user: result, username: req.session.user }
+        });
+      })
+      .catch(e => {
+        res.send("Some thing went wrong");
+      });
+  } else {
+    res.redirect("/");
+  }
+});
+router.get("/road/detail/:id", (req, res) => {
+  if (req.session.user) {
+    const user = database.getRoadById(req.params.id);
+    user
+      .then(result => {
+        res.render("roadDetail", {
+          data: { user: result, username: req.session.user }
+        });
+      })
+      .catch(e => {
+        res.send("Some thing went wrong");
+      });
+  } else {
+    res.redirect("/");
+  }
+});
+
+router.delete("/delete/alloc/:id", (req, res) => {
+  if (req.session.user) {
+    let re = database.deleteAlloc(req.params.id);
+    re.then(() => {
+      res.send({ op: true });
+    });
+  }
+});
+
 module.exports = router;

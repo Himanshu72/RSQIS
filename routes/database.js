@@ -71,6 +71,23 @@ module.exports.addUser = async function(data, type) {
   });
 };
 
+module.exports.getUserById = async id => {
+  const connection = await mysql.createConnection({
+    host: "localhost",
+    user: "root",
+    password: "mysql",
+    database: "rsqis1"
+  });
+
+  return new Promise(async (resolve, reject) => {
+    const [rows, fields] = await connection.execute(
+      "SELECT * FROM `users` where `userID`='" + id + "';"
+    );
+    if (rows.length > 0) resolve(rows);
+    else reject();
+  });
+};
+
 module.exports.findUserById = async email => {
   const connection = await mysql.createConnection({
     host: "localhost",
@@ -150,6 +167,22 @@ module.exports.addRoad = async (roadname, userID, filename) => {
       "');"
   );
 };
+
+module.exports.getAllFilterdRoad = async () => {
+  const connection = await mysql.createConnection({
+    host: "localhost",
+    user: "root",
+    password: "mysql",
+    database: "rsqis1"
+  });
+  return new Promise(async (resolve, reject) => {
+    const [rows, fields] = await connection.execute(
+      "SELECT * FROM `road` WHERE Status='filtered'"
+    );
+    resolve(rows);
+  });
+};
+
 module.exports.getAllRoad = async () => {
   const connection = await mysql.createConnection({
     host: "localhost",
@@ -215,5 +248,71 @@ module.exports.rejectRoad = async function(id) {
   return new Promise((resolve, reject) => {
     if (rows != null) resolve(rows);
     else reject();
+  });
+};
+
+module.exports.allcateWork = async function(
+  workerID,
+  adminID,
+  roadID,
+  description
+) {
+  const connection = await mysql.createConnection({
+    host: "localhost",
+    user: "root",
+    password: "mysql",
+    database: "rsqis1"
+  });
+
+  const [rows, fields] = await connection.execute(
+    "INSERT INTO `workallocated`(`allocateID`, `workerID`, `adminID`, `roadID`, `description`) VALUES ('" +
+      uuid() +
+      "','" +
+      workerID +
+      "','" +
+      adminID +
+      "','" +
+      roadID +
+      "','" +
+      description +
+      "')"
+  );
+  return new Promise((resolve, reject) => {
+    if (rows != null) resolve(rows);
+    else reject();
+  });
+};
+
+module.exports.deleteAlloc = async id => {
+  const connection = await mysql.createConnection({
+    host: "localhost",
+    user: "root",
+    password: "mysql",
+    database: "rsqis1"
+  });
+
+  const [rows, fields] = await connection.execute(
+    "DELETE FROM `workallocated` WHERE `workallocated`.`allocateID` = '" +
+      id +
+      "'"
+  );
+  return new Promise((resolve, reject) => {
+    if (rows != null) resolve(rows);
+    else reject();
+  });
+};
+
+module.exports.getAllAlocation = async () => {
+  const connection = await mysql.createConnection({
+    host: "localhost",
+    user: "root",
+    password: "mysql",
+    database: "rsqis1"
+  });
+  return new Promise(async (resolve, reject) => {
+    const [rows, fields] = await connection.execute(
+      "SELECT * FROM `workallocated`"
+    );
+    resolve(rows);
   });
 };
