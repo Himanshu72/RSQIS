@@ -6,16 +6,21 @@ module.exports.login = async function(email) {
 
   // create the connection
   const connection = await mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "mysql",
-    database: "rsqis1"
+    host: config.host,
+    user: config.DBuser,
+    password: config.DBpass,
+    database: config.DBname
   });
   return new Promise(async (resolve, reject) => {
     const [rows, fields] = await connection.execute(
       `SELECT * FROM users WHERE Email like "${email}" `
     );
-    if (rows.length > 0) resolve(rows);
-    else reject();
+    if (rows.length > 0) {
+      connection.end();
+      resolve(rows);
+    } else {
+      connection.end();
+      reject();
+    }
   });
 };
