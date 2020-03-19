@@ -183,16 +183,27 @@ module.exports.getAllFilterdRoad = async () => {
   });
 };
 
-module.exports.getAllRoad = async () => {
+module.exports.getAllRoad = async type => {
+  if (type == undefined) {
+    type = "untouch";
+  }
+
   const connection = await mysql.createConnection({
     host: "localhost",
     user: "root",
     password: "mysql",
     database: "rsqis1"
   });
+
+  if (type == "all") {
+    return new Promise(async (resolve, reject) => {
+      const [rows, fields] = await connection.execute("SELECT * FROM `road`");
+      resolve(rows);
+    });
+  }
   return new Promise(async (resolve, reject) => {
     const [rows, fields] = await connection.execute(
-      "SELECT * FROM `road` WHERE Status='untouch'"
+      "SELECT * FROM `road` WHERE Status='" + type + "'"
     );
     resolve(rows);
   });

@@ -198,19 +198,26 @@ router.get("/forgot", function(req, res, next) {
   }
 });
 
+router.post("/sort", (req, res) => {
+  res.redirect(`/${req.session.userID}/road?sort=${req.body.sort}`);
+});
+
 /* GET road gallary page. */
 router.get("/:user/road", function(req, res, next) {
   if (req.session.user) {
     if (req.params.user != req.session.userID) {
       res.redirect("/" + req.session.userID + "/road");
     }
-    let roads = database.getAllRoad();
+
+    let type = req.query.sort;
+    let roads = database.getAllRoad(type);
     roads.then(result => {
       res.render("road_gallary", {
         data: {
           user: true,
           username: req.session.user,
-          roads: result
+          roads: result,
+          type: type
         }
       });
     });
@@ -225,7 +232,7 @@ router.get("/:user/road/:id", function(req, res, next) {
     if (req.session.userID != req.params.user) {
       res.redirect("/" + req.session.userID + "/road/" + req.params.id);
     }
-    const roads = database.getAllRoad();
+    const roads = database.getAllRoad("all");
     let currentRoad;
     roads.then(result => {
       let flag = true;
@@ -252,7 +259,8 @@ router.get("/:user/road/:id", function(req, res, next) {
                 user: true,
                 username: req.session.user,
                 data: filedata,
-                curRoad: req.params.id
+                curRoad: req.params.id,
+                roadData: currentRoad
               }
             });
             console.log("CSV file successfully processed");
@@ -269,18 +277,19 @@ router.post("/registerWorker", function(req, res) {
     email: "required|email|maxLength:50",
     fname: "required|maxLength:20",
     lname: "required|maxLength:20",
-    pass: "required",
-    cpass: "required",
     ph: "required|minLength:10|maxLength:10"
   });
-
+  req.body.pass =
+    "W" + req.body.email.substr(0, req.body.email.indexOf("@")) + "@RSQIS";
   v.check().then(matched => {
     if (!matched) {
       console.log(v.errors);
 
-      res.status(422).render("register", { data: { error: v.errors } });
+      res.status(422).render("register", {
+        data: { error: v.errors, type: "W", user: true }
+      });
     } else {
-      if (req.body.pass == req.body.cpass) {
+      if (true) {
         req.body.pass = auth.createSalt(req.body.pass);
         const users = database.addUser(req.body, "worker");
         users
@@ -290,10 +299,10 @@ router.post("/registerWorker", function(req, res) {
           .catch(e => {
             res
               .status(422)
-              .render("register", { data: { error: "some thing went wrong" } });
+              .render("register", {
+                data: { error: "some thing went wrong", type: "W", user: true }
+              });
           });
-      } else {
-        res.status(422).render("register", { data: { error: "pass!=cpass" } });
       }
     }
   });
@@ -319,7 +328,9 @@ router.get("/mngworker", function(req, res, next) {
 /* GET road complaint page. */
 router.get("/addworker", function(req, res, next) {
   if (req.session.user) {
-    res.render("register", { data: { user: false, route: "/registerWorker" } });
+    res.render("register", {
+      data: { user: true, route: "/registerWorker", type: "W" }
+    });
   } else {
     res.redirect("/");
   }
@@ -466,16 +477,7 @@ router.get("/user/detail/:id", (req, res) => {
 });
 router.get("/road/detail/:id", (req, res) => {
   if (req.session.user) {
-    const user = database.getRoadById(req.params.id);
-    user
-      .then(result => {
-        res.render("roadDetail", {
-          data: { user: result, username: req.session.user }
-        });
-      })
-      .catch(e => {
-        res.send("Some thing went wrong");
-      });
+    res.redirect(`/${req.session.userID}/road/${req.params.id}`);
   } else {
     res.redirect("/");
   }

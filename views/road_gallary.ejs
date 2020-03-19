@@ -18,13 +18,57 @@
     </style>
   </head>
   <body>
-  
+
+      <form
+      style="position: absolute; right: 0;margin-top: 10px; margin-right: 10px;"
+        action="/sort"
+      method="POST"
+      onchange="change()" id="frm"
+    >
+      <%let un,fl,re%>
+     <%switch(data.type){
+       case "filtered":
+       fl="selected";
+       break;
+       case "untouch":
+       un="selected";
+       break;
+       case "rejected":
+       re="selected";
+       break;
+      } %>
+      <select name="sort" id="sort">
+        
+        <option value="untouch"  <%=un%> >
+          New Road
+        </option>
+        <option value="filtered" <%=fl%>>
+          Filtered Road
+        </option>
+        <option value="rejected" <%=re%> >
+          Rejected Road
+        </option>
+        </select>
+        
+      </form> 
 <div class="container" style="margin-top:5%;margin-bottom:5%;padding-top:2%; ">
- <div class="row">
+    
+  <div class="row text-center" style="text-align: center;">
+   <%if(data.type){%>
+  <h4 style="margin:auto; text-decoration: underline;margin-bottom: 50px;"><b> <%=data.type.toUpperCase()%> ROAD</b></h4>
+  <%} else {%>
+    <h4 style="margin:auto; text-decoration: underline;margin-bottom: 50px;"><b> UNTOUCH ROAD</b></h4>
+  
+    <%}%>
+  
+</div>
+    <div class="row">
+  
+
   <% for( const road of data.roads ){ %>
      <div class="col-md-4 text-center">
     <!-- Card -->
-<div class="card card-image" style="background-image: url(https://mdbootstrap.com/img/Photos/Horizontal/Work/4-col/img%20%2814%29.jpg);">
+<div class="card card-image" style="background-image: url('/images/background.jpg'); background-size:     cover;   background-repeat:   no-repeat;background-position: center center; ">
 
     <!-- Content -->
     <div class="text-white text-center d-flex align-items-center rgba-black-strong py-5 px-4">
@@ -48,5 +92,11 @@
 </div>
 <%- include('./common/footer'); %>
 <%- include('./common/script'); %>
-  </body>
+<script>
+  function change(){
+    document.querySelector("#frm").submit();
+  }
+</script>  
+</body>
+
 </html>

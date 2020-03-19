@@ -16,7 +16,8 @@
 
 
       <div class="container-fluid" style="margin-top:5%;margin-bottom:5%;">
-              <div class="row">
+          
+        <div class="row">
                       <div class="col-md-12" id="map_canvas" style="height: 300px">
 
 
@@ -32,7 +33,14 @@
                       </div>
                        
                         <div class="jumbotron" >
+                          <div class="row">
+                        <div class="col-md-6">
                           <h3><B>Date:<%=data.data[0].Date%></B></h3>
+                         </div>
+                         <div class="col-md-6">
+                          <h3><B>Stause:<%=data.roadData.Status%></B></h3>                      
+                        </div>
+                        </div>
                           <div id="curve_chart" style="width: 900px; height: 500px"></div>
 
                         </div>
@@ -68,6 +76,34 @@
       </div>
       <%- include('./common/footer'); %>
       <%- include('./common/script'); %>
+      <script
+      type="text/javascript"
+      src="https://www.gstatic.com/charts/loader.js"
+    ></script>
+    <script type="text/javascript">
+            google.charts.load('current', {'packages':['corechart']});
+            google.charts.setOnLoadCallback(drawChart);
+  
+            function drawChart() {
+              var data = google.visualization.arrayToDataTable([
+                ['Time', 'x', 'y',"Z"],
+                <%for(let ele of data.data){%>
+                ['<%=ele.Time%>',<%=ele.XAxis%>,<%=ele.YAxis%>,<%=ele.ZAxis%>],
+                
+                <%}%>
+              ]);
+  
+              var options = {
+                title: '3 axisi comparision',
+                curveType: 'function',
+                legend: { position: 'bottom' }
+              };
+  
+              var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+  
+              chart.draw(data, options);
+            }
+          </script>
       <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBURXw2Qd9JRmA_zcZnIymC1ID5ioc2C-8&callback=initMap"
           async defer>
     </script>
@@ -106,34 +142,7 @@
 
       }
     </script>
-    <script
-    type="text/javascript"
-    src="https://www.gstatic.com/charts/loader.js"
-  ></script>
-  <script type="text/javascript">
-          google.charts.load('current', {'packages':['corechart']});
-          google.charts.setOnLoadCallback(drawChart);
-
-          function drawChart() {
-            var data = google.visualization.arrayToDataTable([
-              ['Time', 'x', 'y',"Z"],
-              <%for(let ele of data.data){%>
-              ['<%=ele.Time%>',<%=ele.XAxis%>,<%=ele.YAxis%>,<%=ele.ZAxis%>],
-              
-              <%}%>
-            ]);
-
-            var options = {
-              title: '3 axisi comparision',
-              curveType: 'function',
-              legend: { position: 'bottom' }
-            };
-
-            var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
-
-            chart.draw(data, options);
-          }
-        </script>
+   
     <script>
       function fil(id) {
         $.ajax({
