@@ -7,11 +7,11 @@ const hbjs = require("handbrake-js");
 const cryptr = new Cryptr(config.secret);
 
 module.exports = {
-  auth: function(user, pass) {
+  auth: function (user, pass) {
     return new Promise((resolve, reject) => {
       const users = database.getAllUser();
-      users.then(rows => {
-        rows.forEach(element => {
+      users.then((rows) => {
+        rows.forEach((element) => {
           if (
             user == element.Email &&
             pass == cryptr.decrypt(element.Pasword) &&
@@ -27,19 +27,19 @@ module.exports = {
       });
     });
   },
-  createSalt: function(text) {
+  createSalt: function (text) {
     const encryptedString = cryptr.encrypt(text);
     return encryptedString;
   },
-  undoSalt: function(salt) {
+  undoSalt: function (salt) {
     const decryptedString = cryptr.decrypt(salt);
     return decryptedString;
   },
-  readCSV: function(file) {
+  readCSV: function (file) {
     let data = [];
     fs.createReadStream("./data/" + file)
       .pipe(csv())
-      .on("data", row => {
+      .on("data", (row) => {
         data.push(1);
         console.log(row);
       })
@@ -48,12 +48,13 @@ module.exports = {
         return data;
       });
   },
-  h264Tomp4: function(file) {
+  h264Tomp4: function (file) {
     hbjs
       .spawn({ input: file, output: file + ".mp4" })
-      .on("error", err => {
+      .on("error", (err) => {
         console.log(err);
       })
-      .on("progress", progress => {});
-  }
+      .on("progress", (progress) => {});
+  },
+  getCords: function (path) {},
 };

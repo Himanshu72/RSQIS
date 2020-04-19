@@ -3,7 +3,7 @@
   <head>
     <title>Register</title>
     <%- include('./common/link'); %> <%- include('./common/navbar',{nav:{
-    home:"active", comp:"", work:"", user:data.user, username:data.username }});
+    home:"", comp:"", work:"active", user:data.user, username:data.username }});
     %>
   </head>
   <body
@@ -14,10 +14,22 @@
   >
     <div class="container" style="margin-top:5%;margin-bottom:5%;">
       <!-- Default form register -->
-      <form class="text-center p-5" action="<%=data.route%>" method="POST">
-        <p class="h4 mb-4" style="color: white;">Sign up</p>
 
-        <%if(data.error){%>
+      <form class="text-center p-5" action="<%=data.route%>" method="POST">
+        <h2
+          style="color: white; text-decoration: 
+      underline
+      
+      ;"
+        >
+          Road Surface Quality Inspection System
+        </h2>
+        <br />
+        <%if(data.type=='W'){%>
+        <p class="h4 mb-4" style="color: white;">Worker Sign up</p>
+        <%}else{%>
+        <p class="h4 mb-4" style="color: white;">User Sign up</p>
+        <%}%> <%if(data.error){%>
         <div class="alert alert-danger">Some Thing Went</div>
 
         <%}%>

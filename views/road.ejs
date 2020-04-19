@@ -15,8 +15,9 @@
     
 
 
-      <div class="container-fluid" style="margin-top:5%;margin-bottom:5%;">
-          
+      <div class="container-fluid" style="margin-top:5%;margin-bottom:10%;">
+        
+         <div class="row text-center" style="padding: 3%;"> <h2 class="text-center" style="margin: auto;"><%=data.roadData.roadName%></h2></div>
         <div class="row">
                       <div class="col-md-12" id="map_canvas" style="height: 300px">
 
@@ -24,12 +25,15 @@
                       </div>
                   </div>
                   <div class="row" style="margin-top:1%; text-align: center;">
-                    <div class="col col-6">
-                    <button class="btn btn-outline-success" onclick="fil('<%=data.curRoad%>')" >Filter This Road <i class="far fa-play-circle"></i></button>
+                    <div class="col col-4">
+                    <button class="btn btn-outline-primary" onclick="fil('<%=data.curRoad%>')" >Undertak Work <i class="far fa-tools"></i></button>
                        </div>
-                       <div class="col col-6">
-                        <button class="btn btn-outline-danger" onclick="rej('<%=data.curRoad%>')"  >Reject This Road <i class="far fa-play-circle"></i></button>
+                       <div class="col col-4">
+                        <button class="btn btn-outline-success" onclick="rej('<%=data.curRoad%>')"  >Work Completed <i class="far fa-road"></i></button>
                            </div>
+                           <div class="col col-4">
+                            <a class="btn btn-outline-warning" href="/proof/<%=data.curRoad%>" >Check Proof <i class="far fa-play-circle"></i></a>
+                               </div>
                       </div>
                        
                         <div class="jumbotron" >
@@ -38,10 +42,17 @@
                           <h3><B>Date:<%=data.data[0].Date%></B></h3>
                          </div>
                          <div class="col-md-6">
-                          <h3><B>Stause:<%=data.roadData.Status%></B></h3>                      
+                          <h3><B>Status:<%if(data.roadData.Status=="untouch"){%>
+                            New Road
+                          <%}else if(data.roadData.Status=="filtered"){%>
+                            Ongoing Road Repairs 
+                            <%}else{%>
+                              Work Completed
+                              <%}%>
+                          </B></h3>                      
                         </div>
                         </div>
-                          <div id="curve_chart" style="width: 900px; height: 500px"></div>
+                          <div id="chartContainer" style="height: 300px; width: 100%;"></div>
 
                         </div>
                          
@@ -76,33 +87,55 @@
       </div>
       <%- include('./common/footer'); %>
       <%- include('./common/script'); %>
-      <script
-      type="text/javascript"
-      src="https://www.gstatic.com/charts/loader.js"
-    ></script>
+      <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
     <script type="text/javascript">
-            google.charts.load('current', {'packages':['corechart']});
-            google.charts.setOnLoadCallback(drawChart);
-  
-            function drawChart() {
-              var data = google.visualization.arrayToDataTable([
-                ['Time', 'x', 'y',"Z"],
-                <%for(let ele of data.data){%>
-                ['<%=ele.Time%>',<%=ele.XAxis%>,<%=ele.YAxis%>,<%=ele.ZAxis%>],
+
+window.onload = function () {
+
+var chart = new CanvasJS.Chart("chartContainer", {
+	animationEnabled: true,
+	theme: "light2",
+	title:{
+		text: "gravity force  on Z axis"
+	},
+	axisY:{
+		includeZero: false
+	},
+	data: [{        
+		type: "line",
+      	indexLabelFontSize: 16,
+		dataPoints: [
+      
+      <%for(let ele of data.data){%>
+              {y:<%=ele.g_force_in_Z%>},  
+        <%}%>
+			
+		]
+	}]
+});
+chart.render();
+
+}
+
+            // function drawChart() {
+            //   var data = google.visualization.arrayToDataTable([
+            //     ['Time', "Z"],
+            //     <%for(let ele of data.data){%>
+            //     ['<%=ele.Time%>',<%=ele.g_force_in_Z%>],
                 
-                <%}%>
-              ]);
+            //     <%}%>
+            //   ]);
   
-              var options = {
-                title: '3 axisi comparision',
-                curveType: 'function',
-                legend: { position: 'bottom' }
-              };
+            //   var options = {
+            //     title: 'g force comparison in 3 axsis',
+            //     curveType: 'function',
+            //     legend: { position: 'bottom' }
+            //   };
   
-              var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+            //   var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
   
-              chart.draw(data, options);
-            }
+            //   chart.draw(data, options);
+            // }
           </script>
       <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBURXw2Qd9JRmA_zcZnIymC1ID5ioc2C-8&callback=initMap"
           async defer>
@@ -158,7 +191,7 @@
       function rej(id) {
         $.ajax({
           type: "PUT",
-          url: "http://localhost:3000/road/reject/" + id,
+          url: "http://localhost:3000/road/completed/" + id,
           success: function(resullt) {
             setTimeout(function() {
               location.reload();

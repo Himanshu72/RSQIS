@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>RSQIS</title>
+    <%- include('./common/link'); %> <%- include('./common/navbar',{nav:{
+    home:"", road:"", work:"", user:data.user, username:data.username }}); %>
+    <style>
+      body {
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container" style="margin-top:5%;margin-bottom:5%;">
+      <!-- Card -->
+      <h3
+        class="text-center"
+        style="margin-top: 10%;text-decoration: underline;"
+      >
+        Complaints
+      </h3>
+      <br />
+      <div class="row">
+        <br />
+        <div class="col col-md-4">
+          <div class="card">
+            <!-- Card image -->
+            <img
+              class="card-img-top"
+              src="/images/1.jpg"
+              alt="Card image cap"
+            />
+
+            <!-- Card content -->
+            <div class="card-body">
+              <!-- Title -->
+              <h4 class="card-title"><a>niharika@gmail.com</a></h4>
+              <!-- Text -->
+              <p class="card-text">
+                There are more than 5-6 pothole in an area of over 100m.
+              </p>
+              <p><b>Address:</b><i>Safal Parisar Road,Nr Orchild Center </i></p>
+              <p><b>Latitude:</b><i>23.0157075</i></p>
+              <p><b>Longitude:</b><i>72.47099</i></p>
+              <a href="#" class="btn btn-danger">Delete</a>
+            </div>
+          </div>
+
+          <!-- Card -->
+        </div>
+        <div class="col col-md-4">
+          <div class="card">
+            <!-- Card image -->
+            <img
+              class="card-img-top"
+              src="/images/2.webp"
+              alt="Card image cap"
+            />
+
+            <!-- Card content -->
+            <div class="card-body">
+              <!-- Title -->
+              <h4 class="card-title"><a>isha@gmail.com</a></h4>
+              <!-- Text -->
+              <p class="card-text">
+                The road was not patched properly and a rough and uneven layer
+                of concrete was dumped on this segments which made it extremly
+                hard to drive on this segments
+              </p>
+              <p><b>Address:</b><i>South Bopal Road </i></p>
+              <p><b>Latitude:</b><i>32.0520745</i></p>
+              <p><b>Longitude:</b><i>24.404990</i></p>
+              <a href="#" class="btn btn-danger">Delete</a>
+            </div>
+          </div>
+
+          <!-- Card -->
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

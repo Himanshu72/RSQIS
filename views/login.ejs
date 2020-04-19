@@ -15,6 +15,15 @@
     <div class="container" style="margin-top:5%;margin-bottom:5%;">
       <!-- Default form login -->
       <form class="text-center p-5" action="/login" method="POST">
+        <h2
+          style="color: white; text-decoration: 
+        underline
+        
+        ;"
+        >
+          Road Surface Quality Inspection System
+        </h2>
+        <br />
         <p class="h4 mb-4" style="color: white;">Sign in</p>
         <%if(data.error){%>
 
@@ -27,6 +36,7 @@
           id="defaultLoginFormEmail"
           class="form-control mb-4"
           placeholder="Email"
+          required
         />
 
         <!-- Password -->
@@ -36,6 +46,7 @@
           id="defaultLoginFormPassword"
           class="form-control mb-4"
           placeholder="Password"
+          required
         />
 
         <div class="d-flex justify-content-around">

@@ -3,7 +3,7 @@ var nodemailer = require("nodemailer");
 const config = require("../config");
 const uuid = require("uuid/v1");
 
-module.exports.getAllWorker = async function() {
+module.exports.getAllWorker = async function () {
   // get the client
 
   // create the connection
@@ -11,7 +11,7 @@ module.exports.getAllWorker = async function() {
     host: config.host,
     user: config.DBuser,
     password: config.DBpass,
-    database: config.DBname
+    database: config.DBname,
   });
   return new Promise(async (resolve, reject) => {
     const [rows, fields] = await connection.execute(
@@ -27,7 +27,7 @@ module.exports.getAllWorker = async function() {
   });
 };
 
-module.exports.getAllUser = async function() {
+module.exports.getAllUser = async function () {
   // get the client
 
   // create the connection
@@ -35,7 +35,7 @@ module.exports.getAllUser = async function() {
     host: "localhost",
     user: "root",
     password: "mysql",
-    database: "rsqis1"
+    database: "rsqis1",
   });
   return new Promise(async (resolve, reject) => {
     const [rows, fields] = await connection.execute("SELECT * FROM `users`");
@@ -49,12 +49,12 @@ module.exports.getAllUser = async function() {
   });
 };
 
-module.exports.addUser = async function(data, type) {
+module.exports.addUser = async function (data, type) {
   const connection = await mysql.createConnection({
     host: config.host,
     user: config.DBuser,
     password: config.DBpass,
-    database: config.DBname
+    database: config.DBname,
   });
 
   const rows = await connection.execute(
@@ -86,12 +86,12 @@ module.exports.addUser = async function(data, type) {
   });
 };
 
-module.exports.getUserById = async id => {
+module.exports.getUserById = async (id) => {
   const connection = await mysql.createConnection({
     host: config.host,
     user: config.DBuser,
     password: config.DBpass,
-    database: config.DBname
+    database: config.DBname,
   });
 
   return new Promise(async (resolve, reject) => {
@@ -108,12 +108,12 @@ module.exports.getUserById = async id => {
   });
 };
 
-module.exports.findUserById = async email => {
+module.exports.findUserById = async (email) => {
   const connection = await mysql.createConnection({
     host: config.host,
     user: config.DBuser,
     password: config.DBpass,
-    database: config.DBname
+    database: config.DBname,
   });
   return new Promise(async (resolve, reject) => {
     const [rows, fields] = await connection.execute(
@@ -129,12 +129,12 @@ module.exports.findUserById = async email => {
   });
 };
 
-module.exports.getRoadById = async id => {
+module.exports.getRoadById = async (id) => {
   const connection = await mysql.createConnection({
     host: config.host,
     user: config.DBuser,
     password: config.DBpass,
-    database: config.DBname
+    database: config.DBname,
   });
 
   return new Promise(async (resolve, reject) => {
@@ -156,18 +156,18 @@ module.exports.sendEmail = (email, pass) => {
     service: "gmail",
     auth: {
       user: config.email,
-      pass: config.pass
-    }
+      pass: config.pass,
+    },
   });
 
   var mailOptions = {
     from: "eventspot07@gmail.com",
     to: email,
     subject: "RSQIS:Forgot your Password",
-    text: "your password is : " + pass
+    text: "your password is : " + pass,
   };
 
-  transporter.sendMail(mailOptions, function(error, info) {
+  transporter.sendMail(mailOptions, function (error, info) {
     console.log("email:" + email);
     console.log("passwoard:" + pass);
     if (error) {
@@ -182,7 +182,7 @@ module.exports.addRoad = async (roadname, userID, filename) => {
     host: config.host,
     user: config.DBuser,
     password: config.DBpass,
-    database: config.DBname
+    database: config.DBname,
   });
   const [rows, fields] = await connection.execute(
     "INSERT INTO `road`(`roadID`, `roadName`, `admin`, `filePath`) VALUES ('" +
@@ -202,7 +202,7 @@ module.exports.getAllFilterdRoad = async () => {
     host: config.host,
     user: config.DBuser,
     password: config.DBpass,
-    database: config.DBname
+    database: config.DBname,
   });
   return new Promise(async (resolve, reject) => {
     const [rows, fields] = await connection.execute(
@@ -213,7 +213,7 @@ module.exports.getAllFilterdRoad = async () => {
   });
 };
 
-module.exports.getAllRoad = async type => {
+module.exports.getAllRoad = async (type) => {
   if (type == undefined) {
     type = "untouch";
   }
@@ -222,7 +222,7 @@ module.exports.getAllRoad = async type => {
     host: config.host,
     user: config.DBuser,
     password: config.DBpass,
-    database: config.DBname
+    database: config.DBname,
   });
 
   if (type == "all") {
@@ -240,12 +240,12 @@ module.exports.getAllRoad = async type => {
     resolve(rows);
   });
 };
-module.exports.deleteWorkerByID = async id => {
+module.exports.deleteWorkerByID = async (id) => {
   const connection = await mysql.createConnection({
     host: config.host,
     user: config.DBuser,
     password: config.DBpass,
-    database: config.DBname
+    database: config.DBname,
   });
 
   return new Promise(async (resolve, reject) => {
@@ -257,12 +257,12 @@ module.exports.deleteWorkerByID = async id => {
   });
 };
 
-module.exports.filterRoad = async function(id) {
+module.exports.filterRoad = async function (id) {
   const connection = await mysql.createConnection({
     host: "localhost",
     user: "root",
     password: "mysql",
-    database: "rsqis1"
+    database: "rsqis1",
   });
   const [rows, fields] = await connection.execute(
     "UPDATE `road` SET `Status` = 'filtered' WHERE `road`.`roadID` = '" +
@@ -281,15 +281,15 @@ module.exports.filterRoad = async function(id) {
   });
 };
 
-module.exports.rejectRoad = async function(id) {
+module.exports.completedRoad = async function (id) {
   const connection = await mysql.createConnection({
     host: config.host,
     user: config.DBuser,
     password: config.DBpass,
-    database: config.DBname
+    database: config.DBname,
   });
-  t[(rows, fields)] = await connection.execute(
-    "UPDATE `road` SET `Status` = 'rejected' WHERE `road`.`roadID` = '" +
+  const [rows, fields] = await connection.execute(
+    "UPDATE `road` SET `Status` = 'completed' WHERE `road`.`roadID` = '" +
       id +
       "';"
   );
@@ -305,7 +305,7 @@ module.exports.rejectRoad = async function(id) {
   });
 };
 
-module.exports.allcateWork = async function(
+module.exports.allcateWork = async function (
   workerID,
   adminID,
   roadID,
@@ -315,7 +315,7 @@ module.exports.allcateWork = async function(
     host: config.host,
     user: config.DBuser,
     password: config.DBpass,
-    database: config.DBname
+    database: config.DBname,
   });
   const [rows, fields] = await connection.execute(
     "INSERT INTO `workallocated`(`allocateID`, `workerID`, `adminID`, `roadID`, `description`) VALUES ('" +
@@ -341,12 +341,12 @@ module.exports.allcateWork = async function(
   });
 };
 
-module.exports.deleteAlloc = async id => {
+module.exports.deleteAlloc = async (id) => {
   const connection = await mysql.createConnection({
     host: config.host,
     user: config.DBuser,
     password: config.DBpass,
-    database: config.DBname
+    database: config.DBname,
   });
   const [rows, fields] = await connection.execute(
     "DELETE FROM `workallocated` WHERE `workallocated`.`allocateID` = '" +
@@ -369,11 +369,27 @@ module.exports.getAllAlocation = async () => {
     host: config.host,
     user: config.DBuser,
     password: config.DBpass,
-    database: config.DBname
+    database: config.DBname,
   });
   return new Promise(async (resolve, reject) => {
     const [rows, fields] = await connection.execute(
       "SELECT * FROM `workallocated`"
+    );
+    connection.end();
+    resolve(rows);
+  });
+};
+
+module.exports.getRoad = async (id) => {
+  const connection = await mysql.createConnection({
+    host: config.host,
+    user: config.DBuser,
+    password: config.DBpass,
+    database: config.DBname,
+  });
+  return new Promise(async (resolve, reject) => {
+    const [rows, fields] = await connection.execute(
+      "SELECT * FROM `road` where  roadID='" + id + "'"
     );
     connection.end();
     resolve(rows);

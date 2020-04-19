@@ -297,11 +297,9 @@ router.post("/registerWorker", function(req, res) {
             res.status(200).redirect("/addWorker");
           })
           .catch(e => {
-            res
-              .status(422)
-              .render("register", {
-                data: { error: "some thing went wrong", type: "W", user: true }
-              });
+            res.status(422).render("register", {
+              data: { error: "some thing went wrong", type: "W", user: true }
+            });
           });
       }
     }
@@ -372,15 +370,17 @@ router.put("/road/filter/:id", (req, res) => {
     });
 });
 
-router.put("/road/reject/:id", (req, res) => {
-  const fil = database.rejectRoad(req.params.id);
+router.put("/road/completed/:id", (req, res) => {
+  const fil = database.completedRoad(req.params.id);
+  console.log("work completed");
   fil
-    .then(
+
+    .then(() => {
       res.send({
         op: true,
         msg: "Successfully done"
-      })
-    )
+      });
+    })
     .catch(e => {
       console.log(e);
       res.send({
@@ -448,7 +448,7 @@ router.get("/allAlocation", (req, res) => {
     all
       .then(result => {
         res.render("checkAllocation", {
-          data: { alloc: result, username: req.session.user }
+          data: { alloc: result, username: req.session.user, user: true }
         });
       })
       .catch(() => {
@@ -482,6 +482,15 @@ router.get("/road/detail/:id", (req, res) => {
     res.redirect("/");
   }
 });
+router.get("/complaints", (req, res) => {
+  if (req.session.user) {
+    res.render("complain", {
+      data: { user: true, username: req.session.user }
+    });
+  } else {
+    res.redirect("/");
+  }
+});
 
 router.delete("/delete/alloc/:id", (req, res) => {
   if (req.session.user) {
@@ -489,6 +498,16 @@ router.delete("/delete/alloc/:id", (req, res) => {
     re.then(() => {
       res.send({ op: true });
     });
+  }
+});
+
+router.get("/proof/:id", (req, res) => {
+  if (req.session.user) {
+    res.render("proof", {
+      data: { user: true, username: req.session.user }
+    });
+  } else {
+    res.redirect("/");
   }
 });
 

@@ -6,15 +6,26 @@
     home:"active", comp:"", work:"", user:data.user, username:data.username }});
     %>
   </head>
-  <body>
+
+  <body
+    style="background: linear-gradient(
+    rgba(0, 0, 0, 0.5),
+    rgba(0, 0, 0, 0.5)
+  ), url('/images/background.jpg'); background-size:     cover;   background-repeat:   no-repeat;background-position: center center;"
+  >
     <div class="container" style="margin-top:5%;margin-bottom:5%;">
       <!-- Default form login -->
-      <form
-        class="text-center border border-light p-5"
-        action="/forgot"
-        method="POST"
-      >
-        <p class="h4 mb-4">Forgot Password</p>
+      <form class="text-center p-5" action="/forgot" method="POST">
+        <h2
+          style="color: white; text-decoration: 
+      underline
+      
+      ;"
+        >
+          Road Surface Quality Inspection System
+        </h2>
+        <br />
+        <p class="h4 mb-4" style="color: white;">Forgot Password</p>
 
         <!-- Email -->
         <input
@@ -23,6 +34,7 @@
           class="form-control mb-4"
           placeholder="E-mail"
           name="email"
+          required
         />
 
         <div class="d-flex justify-content-around"></div>
@@ -31,7 +43,12 @@
         <button class="btn btn-info btn-block my-4" type="submit">
           Reset Password
         </button>
-
+        <div class="alert alert-info text-left">
+          <b>NOTE:</b>&nbsp;<i style="margin:auto;" class="text-center"
+            >You will be sent an email shortly containing your password to your
+            registered email-id</i
+          >
+        </div>
         <!-- Social login -->
       </form>
       <!-- Default form login -->
