@@ -29,52 +29,37 @@
     <br />
     <div class="row">
       <br />
-      <div class="col col-md-4">
+        <%if(data.result==null){%>
+          <h4 class="text-center" style="margin: auto;">No data found.</h4>
+          <%} else {%>
+             <% for(let x=0;x<data.result.length;x++){ %> 
+     
+            <div class="col col-md-4">
         <div class="card">
           <!-- Card image -->
           <img
             class="card-img-top"
-            src="/images/roadc.jpg"
+            src="/images/<%=data.result[x].path%>"
             alt="Card image cap"
           />
 
           <!-- Card content -->
           <div class="card-body">
             <!-- Title -->
-            <h4 class="card-title"><a>ravi@gmail.com</a></h4>
+            <h4 class="card-title"><a><%=data.result[x].Email%></data.result></a></h4>
             <!-- Text -->
             <p class="card-text">
-              work is almost finished just last inspection remaining.
+             <%=data.result[x].description%>
             </p>
-            <p><b>Date:</b><i>1-JAN-2020 10:19</i></p>
+            <%const d=new Date(data.result[x].Timestamp)%>
+            <p><b>Date:</b><i><%=d%></i></p>
            </div>
         </div>
 
         <!-- Card -->
       </div>
-      <div class="col col-md-4">
-        <div class="card">
-          <!-- Card image -->
-          <img
-            class="card-img-top"
-            src="/images/road_pro.jpg"
-            alt="Card image cap"
-          />
-
-          <!-- Card content -->
-          <div class="card-body">
-            <!-- Title -->
-            <h4 class="card-title"><a>Worker@gmail.com</a></h4>
-            <!-- Text -->
-            <p class="card-text">
-              Currenty we are working on road structure.
-            </p>
-            <p><b>Date:</b><i>1-JUN-2019 06:03</i></p>
-              </div>
-        </div>
-
-        <!-- Card -->
-      </div>
+      <%} %>
+     <%}%>
      
     </div>
     <br><br>

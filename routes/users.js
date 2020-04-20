@@ -109,6 +109,7 @@ router.post("/uploadProof", (req, res) => {
     desc: req.body.desc,
     path: fileName,
     workID: req.body.workID,
+    roadID: req.body.roadID,
   };
   console.log(obj);
   const data = android.addProof(obj);

@@ -395,3 +395,25 @@ module.exports.getRoad = async (id) => {
     resolve(rows);
   });
 };
+
+module.exports.getProof = async (id) => {
+  const connection = await mysql.createConnection({
+    host: config.host,
+    user: config.DBuser,
+    password: config.DBpass,
+    database: config.DBname,
+  });
+  return new Promise(async (resolve, reject) => {
+    const [rows, fields] = await connection.execute(
+      "SELECT * FROM `proof`,`users` where  proof.workID=users.userID  AND roadID='" +
+        id +
+        "' ORDER BY proof.Timestamp DESC"
+    );
+    connection.end();
+    console.log(rows);
+    if (rows.length > 0) resolve(rows);
+    else reject();
+  });
+};
+
+//

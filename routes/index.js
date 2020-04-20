@@ -13,7 +13,7 @@ router.post("/addRoad", (req, res, next) => {
   if (req.session.user) {
     var fstream;
     req.pipe(req.busboy);
-    req.busboy.on("field", function(
+    req.busboy.on("field", function (
       fieldname,
       val,
       fieldnameTruncated,
@@ -24,7 +24,7 @@ router.post("/addRoad", (req, res, next) => {
       roadname = val;
     });
     let csvfile;
-    req.busboy.on("file", function(fieldname, file, filename) {
+    req.busboy.on("file", function (fieldname, file, filename) {
       console.log("Uploading: " + filename);
       vid = false;
       vidname = "";
@@ -39,14 +39,14 @@ router.post("/addRoad", (req, res, next) => {
       }
       fstream = fs.createWriteStream("./" + "/public/data/" + name);
       file.pipe(fstream);
-      fstream.on("close", function() {
+      fstream.on("close", function () {
         if (vid) {
           auth.h264Tomp4("./public/data/" + vidname);
         }
         //auth.readCSV(name);
       });
     });
-    req.busboy.on("finish", function() {
+    req.busboy.on("finish", function () {
       console.log(
         `Roadname:${name} admin: ${req.session.id} filename: ${csvfile} `
       );
@@ -55,8 +55,8 @@ router.post("/addRoad", (req, res, next) => {
         data: {
           msg: "Successfully Updated",
           user: true,
-          username: req.session.user
-        }
+          username: req.session.user,
+        },
       });
     });
   } else {
@@ -64,7 +64,7 @@ router.post("/addRoad", (req, res, next) => {
   }
 });
 
-router.get("/", function(req, res, next) {
+router.get("/", function (req, res, next) {
   if (req.session.user) {
     res.redirect("/" + req.session.userID + "/road");
   } else {
@@ -80,17 +80,17 @@ router.get("/addRoad", (req, res) => {
     res.redirect("/");
   }
 });
-router.post("/register", function(req, res) {
+router.post("/register", function (req, res) {
   const v = new Validator(req.body, {
     email: "required|email|maxLength:50",
     fname: "required|maxLength:20",
     lname: "required|maxLength:20",
     pass: "required",
     cpass: "required",
-    ph: "required|minLength:10|maxLength:10"
+    ph: "required|minLength:10|maxLength:10",
   });
 
-  v.check().then(matched => {
+  v.check().then((matched) => {
     if (!matched) {
       console.log(v.errors);
 
@@ -100,10 +100,10 @@ router.post("/register", function(req, res) {
         req.body.pass = auth.createSalt(req.body.pass);
         const users = database.addUser(req.body, "admin");
         users
-          .then(function(rows) {
+          .then(function (rows) {
             res.status(200).redirect("/");
           })
-          .catch(e => {
+          .catch((e) => {
             console.log(e);
             res
               .status(422)
@@ -118,10 +118,10 @@ router.post("/register", function(req, res) {
 });
 
 /* POST login page. */
-router.post("/login", function(req, res, next) {
+router.post("/login", function (req, res, next) {
   if (req.session.user) {
     res.redirect("/" + req.session.user + "/road", {
-      data: { user: true }
+      data: { user: true },
     });
   } else {
     let username = req.body.username;
@@ -129,7 +129,7 @@ router.post("/login", function(req, res, next) {
     if (username && password) {
       auth
         .auth(username, password)
-        .then(result => {
+        .then((result) => {
           req.session.user = username;
           console.log(result);
           req.session.userID = result;
@@ -141,8 +141,8 @@ router.post("/login", function(req, res, next) {
             data: {
               error: true,
               msg: "Invalid Username or Password",
-              user: false
-            }
+              user: false,
+            },
           });
         });
     } else {
@@ -150,14 +150,14 @@ router.post("/login", function(req, res, next) {
         data: {
           error: true,
           msg: "Username or Password must not be empty",
-          user: false
-        }
+          user: false,
+        },
       });
     }
   }
 });
 /* GET register page. */
-router.get("/register", function(req, res, next) {
+router.get("/register", function (req, res, next) {
   if (req.session.user) {
     res.redirect("/" + req.session.userID + "/road");
   } else {
@@ -168,16 +168,16 @@ router.get("/register", function(req, res, next) {
 // POST forgot
 router.post("/forgot", (req, res) => {
   const v = new Validator(req.body, {
-    email: "required|email|maxLength:50"
+    email: "required|email|maxLength:50",
   });
 
-  v.check().then(matched => {
+  v.check().then((matched) => {
     if (!matched) {
       res.redirect("/forgot");
     } else {
       user = database.findUserById(req.body.email);
       user
-        .then(result => {
+        .then((result) => {
           database.sendEmail(result[0].Email, auth.undoSalt(result[0].Pasword));
           res.redirect("/");
         })
@@ -190,7 +190,7 @@ router.post("/forgot", (req, res) => {
 });
 
 /* GET road gallary pag e. */
-router.get("/forgot", function(req, res, next) {
+router.get("/forgot", function (req, res, next) {
   if (req.session.user) {
     res.redirect("/" + req.session.id + "/road");
   } else {
@@ -203,7 +203,7 @@ router.post("/sort", (req, res) => {
 });
 
 /* GET road gallary page. */
-router.get("/:user/road", function(req, res, next) {
+router.get("/:user/road", function (req, res, next) {
   if (req.session.user) {
     if (req.params.user != req.session.userID) {
       res.redirect("/" + req.session.userID + "/road");
@@ -211,14 +211,14 @@ router.get("/:user/road", function(req, res, next) {
 
     let type = req.query.sort;
     let roads = database.getAllRoad(type);
-    roads.then(result => {
+    roads.then((result) => {
       res.render("road_gallary", {
         data: {
           user: true,
           username: req.session.user,
           roads: result,
-          type: type
-        }
+          type: type,
+        },
       });
     });
   } else {
@@ -227,14 +227,14 @@ router.get("/:user/road", function(req, res, next) {
 });
 
 /* GET road page. */
-router.get("/:user/road/:id", function(req, res, next) {
+router.get("/:user/road/:id", function (req, res, next) {
   if (req.session.user) {
     if (req.session.userID != req.params.user) {
       res.redirect("/" + req.session.userID + "/road/" + req.params.id);
     }
     const roads = database.getAllRoad("all");
     let currentRoad;
-    roads.then(result => {
+    roads.then((result) => {
       let flag = true;
       for (let road of result) {
         if (road.roadID == req.params.id) {
@@ -250,7 +250,7 @@ router.get("/:user/road/:id", function(req, res, next) {
         let filedata = [];
         fs.createReadStream("./public/data/" + currentRoad.filePath)
           .pipe(csv())
-          .on("data", row => {
+          .on("data", (row) => {
             filedata.push(row);
           })
           .on("end", () => {
@@ -260,8 +260,8 @@ router.get("/:user/road/:id", function(req, res, next) {
                 username: req.session.user,
                 data: filedata,
                 curRoad: req.params.id,
-                roadData: currentRoad
-              }
+                roadData: currentRoad,
+              },
             });
             console.log("CSV file successfully processed");
           });
@@ -272,33 +272,33 @@ router.get("/:user/road/:id", function(req, res, next) {
   }
 });
 
-router.post("/registerWorker", function(req, res) {
+router.post("/registerWorker", function (req, res) {
   const v = new Validator(req.body, {
     email: "required|email|maxLength:50",
     fname: "required|maxLength:20",
     lname: "required|maxLength:20",
-    ph: "required|minLength:10|maxLength:10"
+    ph: "required|minLength:10|maxLength:10",
   });
   req.body.pass =
     "W" + req.body.email.substr(0, req.body.email.indexOf("@")) + "@RSQIS";
-  v.check().then(matched => {
+  v.check().then((matched) => {
     if (!matched) {
       console.log(v.errors);
 
       res.status(422).render("register", {
-        data: { error: v.errors, type: "W", user: true }
+        data: { error: v.errors, type: "W", user: true },
       });
     } else {
       if (true) {
         req.body.pass = auth.createSalt(req.body.pass);
         const users = database.addUser(req.body, "worker");
         users
-          .then(function(rows) {
+          .then(function (rows) {
             res.status(200).redirect("/addWorker");
           })
-          .catch(e => {
+          .catch((e) => {
             res.status(422).render("register", {
-              data: { error: "some thing went wrong", type: "W", user: true }
+              data: { error: "some thing went wrong", type: "W", user: true },
             });
           });
       }
@@ -306,13 +306,13 @@ router.post("/registerWorker", function(req, res) {
   });
   //res.redirect("/");
 });
-router.get("/mngworker", function(req, res, next) {
+router.get("/mngworker", function (req, res, next) {
   if (req.session.user) {
     const workers = database.getAllWorker();
     workers
-      .then(result => {
+      .then((result) => {
         res.render("viewUser", {
-          data: { user: result, username: req.session.user }
+          data: { user: result, username: req.session.user },
         });
       })
       .catch(() => {
@@ -324,10 +324,10 @@ router.get("/mngworker", function(req, res, next) {
 });
 
 /* GET road complaint page. */
-router.get("/addworker", function(req, res, next) {
+router.get("/addworker", function (req, res, next) {
   if (req.session.user) {
     res.render("register", {
-      data: { user: true, route: "/registerWorker", type: "W" }
+      data: { user: true, route: "/registerWorker", type: "W" },
     });
   } else {
     res.redirect("/");
@@ -335,7 +335,7 @@ router.get("/addworker", function(req, res, next) {
 });
 
 /* GET road complaint page. */
-router.get("/:user/complaint_list", function(req, res, next) {
+router.get("/:user/complaint_list", function (req, res, next) {
   if (req.session.user) {
     res.render("road", { data: { user: true }, username: req.session.user });
   } else {
@@ -344,8 +344,8 @@ router.get("/:user/complaint_list", function(req, res, next) {
 });
 
 /* GET road complaint page. */
-router.get("/logout", function(req, res, next) {
-  req.session.destroy(function(err) {
+router.get("/logout", function (req, res, next) {
+  req.session.destroy(function (err) {
     // cannot access session here
     console.log(err);
   });
@@ -358,14 +358,14 @@ router.put("/road/filter/:id", (req, res) => {
     .then(
       res.send({
         op: true,
-        msg: "Successfully done"
+        msg: "Successfully done",
       })
     )
-    .catch(e => {
+    .catch((e) => {
       console.log(e);
       res.send({
         op: false,
-        msg: "Something went wrong"
+        msg: "Something went wrong",
       });
     });
 });
@@ -378,14 +378,14 @@ router.put("/road/completed/:id", (req, res) => {
     .then(() => {
       res.send({
         op: true,
-        msg: "Successfully done"
+        msg: "Successfully done",
       });
     })
-    .catch(e => {
+    .catch((e) => {
       console.log(e);
       res.send({
         op: false,
-        msg: "Something went wrong"
+        msg: "Something went wrong",
       });
     });
 });
@@ -394,20 +394,20 @@ router.get("/assignWork", (req, res) => {
   if (req.session.user) {
     const roads = database.getAllFilterdRoad();
     roads
-      .then(result => {
+      .then((result) => {
         roadrows = result;
         const workers = database.getAllWorker();
         workers
-          .then(data => {
+          .then((data) => {
             const workerrows = data;
             res.render("assign", {
               data: {
                 user: true,
                 username: req.session.user,
                 roads: roadrows,
-                worker: workerrows
+                worker: workerrows,
               },
-              username: req.session.user
+              username: req.session.user,
             });
           })
           .catch(() => {
@@ -446,9 +446,9 @@ router.get("/allAlocation", (req, res) => {
   if (req.session.user) {
     const all = database.getAllAlocation();
     all
-      .then(result => {
+      .then((result) => {
         res.render("checkAllocation", {
-          data: { alloc: result, username: req.session.user, user: true }
+          data: { alloc: result, username: req.session.user, user: true },
         });
       })
       .catch(() => {
@@ -463,12 +463,12 @@ router.get("/user/detail/:id", (req, res) => {
   if (req.session.user) {
     const user = database.getUserById(req.params.id);
     user
-      .then(result => {
+      .then((result) => {
         res.render("userDetail", {
-          data: { user: result, username: req.session.user }
+          data: { user: result, username: req.session.user },
         });
       })
-      .catch(e => {
+      .catch((e) => {
         res.send("Some thing went wrong");
       });
   } else {
@@ -485,7 +485,7 @@ router.get("/road/detail/:id", (req, res) => {
 router.get("/complaints", (req, res) => {
   if (req.session.user) {
     res.render("complain", {
-      data: { user: true, username: req.session.user }
+      data: { user: true, username: req.session.user },
     });
   } else {
     res.redirect("/");
@@ -503,9 +503,19 @@ router.delete("/delete/alloc/:id", (req, res) => {
 
 router.get("/proof/:id", (req, res) => {
   if (req.session.user) {
-    res.render("proof", {
-      data: { user: true, username: req.session.user }
-    });
+    const proof = database.getProof(req.params.id);
+    proof
+      .then((result) => {
+        console.log(result);
+        res.render("proof", {
+          data: { user: true, username: req.session.user, result: result },
+        });
+      })
+      .catch(() => {
+        res.render("proof", {
+          data: { user: true, username: req.session.user, result: null },
+        });
+      });
   } else {
     res.redirect("/");
   }

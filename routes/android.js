@@ -62,7 +62,7 @@ module.exports.addProof = async function (obj) {
   });
 
   const rows = await connection.execute(
-    "INSERT INTO `proof`(`proofID`, `workID`, `description`, `path`) VALUES ('" +
+    "INSERT INTO `proof`(`proofID`, `workID`, `description`, `path`,`roadID`) VALUES ('" +
       uuid() +
       "','" +
       obj.workID +
@@ -70,6 +70,8 @@ module.exports.addProof = async function (obj) {
       obj.desc +
       "','" +
       obj.path +
+      "','" +
+      obj.roadID +
       "')"
   );
   // console.log(rows);
