@@ -259,10 +259,10 @@ module.exports.deleteWorkerByID = async (id) => {
 
 module.exports.filterRoad = async function (id) {
   const connection = await mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "mysql",
-    database: "rsqis1",
+    host: config.host,
+    user: config.DBuser,
+    password: config.DBpass,
+    database: config.DBname,
   });
   const [rows, fields] = await connection.execute(
     "UPDATE `road` SET `Status` = 'filtered' WHERE `road`.`roadID` = '" +

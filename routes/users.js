@@ -3,6 +3,29 @@ var router = express.Router();
 var database = require("./database");
 var android = require("./android");
 var service = require("../service");
+var base64ToImage = require("base64-to-image");
+
+var multer = require("multer");
+var storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "/public/images");
+  },
+  filename: (req, file, cb) => {
+    console.log(file);
+    var filetype = "";
+    if (file.mimetype === "image/gif") {
+      filetype = "gif";
+    }
+    if (file.mimetype === "image/png") {
+      filetype = "png";
+    }
+    if (file.mimetype === "image/jpeg") {
+      filetype = "jpg";
+    }
+    cb(null, "image-" + Date.now() + "." + filetype);
+  },
+});
+var upload = multer({ storage: storage });
 /* GET users listing. */
 router.get("/", function (req, res, next) {
   res.send("respond with a resource");
@@ -72,12 +95,35 @@ router.post("/getRoad", (req, res) => {
     });
 });
 
-router.post("/road/cords", (req, res) => {
-  const id = req.body.id;
-  const road = database.getRoad("04908cb0-69c4-11ea-a878-3dea958202a5");
+router.post("/uploadProof", (req, res) => {
+  // console.log(req.body);
+  var base64Str = req.body.img;
+
+  var path = __dirname + "/../public/images/";
+
+  var date = new Date();
+  var optionalObj = { fileName: date.getTime(), type: "png" };
+  const { fileName } = base64ToImage(base64Str, path, optionalObj);
+
+  res.send("ok");
+});
+
+router.post("/road/cords", async (req, res) => {
+  const id = req.body.roadID;
+  console.log(id);
+  const road = database.getRoad(id);
   road
     .then((result) => {
-      res.send(result);
+      const data = service.getCords(
+        __dirname + "/../public/data/" + result[0].filePath
+      );
+      data
+        .then((fin) => {
+          res.send(fin);
+        })
+        .catch(() => {
+          res.send("no road found");
+        });
     })
     .catch(() => {
       res.send("no road found");

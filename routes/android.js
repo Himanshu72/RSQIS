@@ -1,6 +1,8 @@
 var mysql = require("mysql2/promise");
 const config = require("../config");
 const service = require("../service");
+const uuid = require("uuid/v1");
+
 module.exports.login = async function (email) {
   // get the client
 
@@ -42,6 +44,37 @@ module.exports.getAlloc = async function (id) {
     );
 
     if (rows.length > 0) {
+      connection.end();
+      resolve(rows);
+    } else {
+      connection.end();
+      reject();
+    }
+  });
+};
+
+module.exports.addProof = async function (obj) {
+  const connection = await mysql.createConnection({
+    host: config.host,
+    user: config.DBuser,
+    password: config.DBpass,
+    database: config.DBname,
+  });
+
+  const rows = await connection.execute(
+    "INSERT INTO `proof`(`proofID`, `workID`, `description`, `path`) VALUES ('" +
+      uuid() +
+      "','" +
+      obj.workID +
+      "','" +
+      obj.desc +
+      "','" +
+      obj.path +
+      "')"
+  );
+  // console.log(rows);
+  return new Promise(async (resolve, reject) => {
+    if (rows != null) {
       connection.end();
       resolve(rows);
     } else {

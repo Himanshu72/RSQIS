@@ -56,5 +56,24 @@ module.exports = {
       })
       .on("progress", (progress) => {});
   },
-  getCords: function (path) {},
+};
+
+module.exports.getCords = function (path) {
+  return new Promise((resolve, reject) => {
+    let data = [];
+    fs.createReadStream(path)
+      .pipe(csv())
+      .on("data", (row) => {
+        data.push({
+          lat: row.Latitude,
+          long: row.Longitude,
+        });
+        //   console.log(row);
+      })
+      .on("end", () => {
+        console.log("CSV file successfully processed");
+
+        resolve(data);
+      });
+  });
 };
