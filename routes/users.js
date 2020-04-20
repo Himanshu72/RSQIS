@@ -105,7 +105,20 @@ router.post("/uploadProof", (req, res) => {
   var optionalObj = { fileName: date.getTime(), type: "png" };
   const { fileName } = base64ToImage(base64Str, path, optionalObj);
 
-  res.send("ok");
+  const obj = {
+    desc: req.body.desc,
+    path: fileName,
+    workID: req.body.workID,
+  };
+  console.log(obj);
+  const data = android.addProof(obj);
+  data
+    .then((res) => {
+      res.send("ok");
+    })
+    .catch(() => {
+      res.send("ok");
+    });
 });
 
 router.post("/road/cords", async (req, res) => {
@@ -129,5 +142,23 @@ router.post("/road/cords", async (req, res) => {
       res.send("no road found");
     });
 });
+router.post("/feedback", (req, res) => {
+  var base64Str = req.body.img;
+  var path = __dirname + "/../public/images/";
+  var date = new Date();
+  var optionalObj = { fileName: date.getTime(), type: "png" };
+  const { fileName } = base64ToImage(base64Str, path, optionalObj);
+  const obj = {
+    path: fileName,
+    pubID: req.body.publicID,
+    issue: req.body.issue,
+    lng: req.body.lng,
+    lat: req.body.lat,
+    add: req.body.add,
+  };
 
+  android.addFeed(obj);
+  console.log(obj);
+  res.send("ok");
+});
 module.exports = router;

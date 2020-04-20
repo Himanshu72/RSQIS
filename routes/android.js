@@ -83,3 +83,40 @@ module.exports.addProof = async function (obj) {
     }
   });
 };
+
+module.exports.addFeed = async function (obj) {
+  const connection = await mysql.createConnection({
+    host: config.host,
+    user: config.DBuser,
+    password: config.DBpass,
+    database: config.DBname,
+  });
+
+  const rows = await connection.execute(
+    "INSERT INTO `feedback`(`feedID`, `publicID`, `issue`, `address`, `lat`, `lng`, `path`) VALUES ('" +
+      uuid() +
+      "','" +
+      obj.pubID +
+      "','" +
+      obj.issue +
+      "','" +
+      obj.add +
+      "','" +
+      obj.lat +
+      "','" +
+      obj.lng +
+      "','" +
+      obj.path +
+      "')"
+  );
+  // console.log(rows);
+  return new Promise(async (resolve, reject) => {
+    if (rows != null) {
+      connection.end();
+      resolve(rows);
+    } else {
+      connection.end();
+      reject();
+    }
+  });
+};
