@@ -484,9 +484,18 @@ router.get("/road/detail/:id", (req, res) => {
 });
 router.get("/complaints", (req, res) => {
   if (req.session.user) {
-    res.render("complain", {
-      data: { user: true, username: req.session.user },
-    });
+    const comps = database.getComp();
+    comps
+      .then((result) => {
+        res.render("complain", {
+          data: { user: true, username: req.session.user, data: result },
+        });
+      })
+      .catch(() => {
+        res.render("complain", {
+          data: { user: true, username: req.session.user, data: null },
+        });
+      });
   } else {
     res.redirect("/");
   }
@@ -518,6 +527,19 @@ router.get("/proof/:id", (req, res) => {
       });
   } else {
     res.redirect("/");
+  }
+});
+
+router.delete("/delete/comp/:id", (req, res) => {
+  if (req.session.user) {
+    const data = database.deleteComp(req.params.id);
+    data
+      .then((result) => {
+        res.send(result);
+      })
+      .catch(() => {
+        res.send("404");
+      });
   }
 });
 

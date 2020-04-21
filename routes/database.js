@@ -416,4 +416,36 @@ module.exports.getProof = async (id) => {
   });
 };
 
-//
+module.exports.getComp = async function () {
+  const connection = await mysql.createConnection({
+    host: config.host,
+    user: config.DBuser,
+    password: config.DBpass,
+    database: config.DBname,
+  });
+  return new Promise(async (resolve, reject) => {
+    const [rows, fields] = await connection.execute(
+      "SELECT * FROM `feedback`, `users` where users.userID=feedback.publicID ORDER BY feedback.timestamp DESC"
+    );
+    connection.end();
+    console.log(rows);
+    if (rows.length > 0) resolve(rows);
+    else reject();
+  });
+};
+
+module.exports.deleteComp = async (id) => {
+  const connection = await mysql.createConnection({
+    host: config.host,
+    user: config.DBuser,
+    password: config.DBpass,
+    database: config.DBname,
+  });
+  return new Promise(async (resolve, reject) => {
+    const [rows, fields] = await connection.execute(
+      "DELETE FROM `feedback` WHERE feedID='" + id + "'"
+    );
+    connection.end();
+    resolve(rows);
+  });
+};
