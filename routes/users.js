@@ -162,4 +162,18 @@ router.post("/feedback", (req, res) => {
   console.log(obj);
   res.send("ok");
 });
+
+router.post("/forgot", (req, res) => {
+  user = database.findUserById(req.body.email);
+  console.log(req.body.email);
+  user
+    .then((result) => {
+      database.sendEmail(result[0].Email, service.undoSalt(result[0].Pasword));
+      res.send("200");
+    })
+    .catch(() => {
+      res.send("400");
+    });
+});
+
 module.exports = router;
